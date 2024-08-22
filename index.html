@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Floofi Music Library</title>
+    <link rel="stylesheet" href="https://fella.floo.fi/0.3.2/fella.min.css" integrity="sha384-zSxi9hAPoU4Gevvw8+Dye1I00atHgA6Aa93GUweJFAPBKDBR4h0RvsBPzXCF4vbl" crossorigin="anonymous">
+    <link rel="shortcut icon" href="/assets/img/favicon.png" type="image/svg+xml">
+    <!--suppress JSUnusedGlobalSymbols -->
+    <script>
+        let FF_FOUC_FIX;
+    </script>
+</head>
+<body>
+    <div id="loader" class="fella-loader-container">
+        <svg class="fella-loader" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" style="shape-rendering: auto; display: block; background: transparent;">
+            <g><g transform="rotate(0 50 50)">
+                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
+                    <animate repeatCount="indefinite" begin="-0.9166666666666666s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
+                </rect>
+            </g><g transform="rotate(30 50 50)">
+                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
+                    <animate repeatCount="indefinite" begin="-0.8333333333333334s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
+                </rect>
+            </g><g transform="rotate(60 50 50)">
+                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
+                    <animate repeatCount="indefinite" begin="-0.75s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
+                </rect>
+            </g><g transform="rotate(90 50 50)">
+                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
+                    <animate repeatCount="indefinite" begin="-0.6666666666666666s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
+                </rect>
+            </g><g transform="rotate(120 50 50)">
+                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
+                    <animate repeatCount="indefinite" begin="-0.5833333333333334s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
+                </rect>
+            </g><g transform="rotate(150 50 50)">
+                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
+                    <animate repeatCount="indefinite" begin="-0.5s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
+                </rect>
+            </g><g transform="rotate(180 50 50)">
+                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
+                    <animate repeatCount="indefinite" begin="-0.4166666666666667s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
+                </rect>
+            </g><g transform="rotate(210 50 50)">
+                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
+                    <animate repeatCount="indefinite" begin="-0.3333333333333333s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
+                </rect>
+            </g><g transform="rotate(240 50 50)">
+                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
+                    <animate repeatCount="indefinite" begin="-0.25s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
+                </rect>
+            </g><g transform="rotate(270 50 50)">
+                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
+                    <animate repeatCount="indefinite" begin="-0.16666666666666666s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
+                </rect>
+            </g><g transform="rotate(300 50 50)">
+                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
+                    <animate repeatCount="indefinite" begin="-0.08333333333333333s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
+                </rect>
+            </g><g transform="rotate(330 50 50)">
+                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
+                    <animate repeatCount="indefinite" begin="0s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
+                </rect>
+            </g><g></g></g>
+        </svg>
+    </div>
+
+    <main id="app" class="fella-escape" style="display: none;">
+        <nav id="navbar" class="fella-nav-no-border fella-nav">
+            <div class="fella-nav-inner">
+                <div class="fella-nav-left">
+                    <a href="/" target="_blank">
+                        <img class="fella-nav-icon" alt="Floofi Music Library" src="/assets/img/wordmark.png">
+                    </a>
+                </div>
+                <div class="fella-nav-right">
+                    <span id="count" class="fella-nav-subtitle">Loading...</span>
+                </div>
+            </div>
+        </nav>
+
+        <div class="fella-container" style="margin-top: 20px;">
+            <div class="fella-footnotes fella-section fella-section-linked">While we put our best efforts toward giving
+                you the highest quality covers and music works possible, you might still encounter covers with corrupted
+                or missing audio. There is unfortunately nothing we can do about this as it means the original files
+                have been lost and corrupted.
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdKpkB_oqPVQ_jI7kkOrcErk2fBPKDVSQ42ewk_QkBoP3-5ZQ/viewform"
+                   target="_blank">Sign up to get notifications when new releases are published.</a>
+            </div>
+            <input type="text" class="fella-form-control" style="width: calc(100% - 36px); margin-top: 20px; margin-bottom: 20px;"
+                   autofocus placeholder="Search for some cover or production..." id="search" onkeydown="search();"
+                   onkeyup="search();" onchange="search();">
+
+            <div class="fella-list-container" id="js-data-list"></div>
+            <div class="fella-list-container" id="js-data-results" style="display: none;"></div>
+
+            <footer class="fella-footnotes fella-section fella-section-linked">
+                Unless mentioned otherwise, all content on this website is © Floofi Systems. All songs belong to their
+                original creators, and you can <a class="link" target="_blank" href="https://floo.fi/contact/start?i=10">
+                contact us to report a copyright infrigment</a>. AI-generated songs are made with <a class="link"
+                target="_blank" href="https://suno.com">Suno</a>.
+            </footer>
+
+            <br><br><br>
+        </div>
+    </main>
+
+    <div class="fella-modal" tabindex="-1" id="player">
+        <div class="fella-modal-dialog">
+            <div class="fella-modal-content">
+                <div class="fella-modal-body">
+                    <h5 class="fella-modal-title"><span id="player-title"></span></h5>
+                    <audio id="player-el" controls style="width: 100%;" controlslist="nodownload,nofullscreen,noremoteplayback" disableremoteplayback="yes"></audio>
+                </div>
+                <div class="fella-modal-footer">
+                    <div class="fella-modal-footer-left">
+                        <span onclick="modalHide(); document.getElementById('player').classList.remove('show');" class="fella-btn fella-btn-flush fella-btn-secondary">Close</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fella-modal" tabindex="-1" id="versions">
+        <div class="fella-modal-dialog">
+            <div class="fella-modal-content">
+                <div class="fella-modal-body">
+                    <h5 class="fella-modal-title">Select a version</h5>
+                    <p>Select the version of "<span id="versions-title"></span>" you want to listen to:</p>
+                    <div id="versions-list" class="fella-list-container"></div>
+                </div>
+                <div class="fella-modal-footer">
+                    <div class="fella-modal-footer-left">
+                        <span onclick="document.getElementById('versions').classList.remove('show');" class="fella-btn fella-btn-flush fella-btn-secondary">Close</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
+    <script src="/assets/js/scroll.js"></script>
+    <script src="/assets/js/util.js"></script>
+    <script src="/assets/js/loader.js"></script>
+</body>
+</html>
