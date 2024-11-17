@@ -81,7 +81,7 @@ window.onload = async () => {
     });
 
     document.getElementById("count").innerText = Object.keys(window.filesDeduplicated).length + " productions";
-    document.getElementById("loader").style.display = "none";
+    completeLoad();
     document.getElementById("app").style.display = "";
     document.getElementById("search").value = "";
     document.getElementById("search").focus();
