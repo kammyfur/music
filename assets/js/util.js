@@ -32,8 +32,9 @@ window.onhashchange = window.processHash = () => {
     if (location.hash !== "" && hash !== "") {
         let version;
         for (let record of window.filesProcessed) {
-            for (let currentVersion of record.versions) {
-                if (currentVersion.id === hash) {
+            for (let entry of Object.entries(record.versions)) {
+                let currentVersion = entry[1];
+                if (currentVersion.id === hash.split("/")[0] && entry[0] === hash.split("/")[1]) {
                     version = currentVersion;
                 }
             }
@@ -56,7 +57,7 @@ function registerClicks(base = "js-data-list-item-") {
             .onclick = () => {
             if (i[1].versions.length < 2) {
                 let version = i[1].versions[0];
-                location.hash = "#/" + version.id;
+                location.hash = "#/" + version.id + "/0";
             } else {
                 window.versionTitle.innerText = i[1].track + (i[1].edition.length > 0 ? " (" + i[1].edition.join(", ") + ")" : "")
                 window.versionList.innerHTML = i[1].versions.map((i, j) => [i, j])
@@ -85,7 +86,7 @@ function registerClicks(base = "js-data-list-item-") {
 
                 i[1].versions.map((version, j) => {
                     document.getElementById("versions-item-" + j).onclick = () => {
-                        location.hash = "#/" + version.id;
+                        location.hash = "#/" + version.id + "/" + j;
                     }
                 });
             }
