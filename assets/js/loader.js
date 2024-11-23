@@ -68,8 +68,7 @@ window.onload = async () => {
             {name: 'edition', weight: 0.8},
             {name: 'versions.edition', weight: 0.8},
             {name: 'versions.year', weight: 0.5},
-            {name: 'versions.file',weight: 0.5},
-            {name: 'versions.fullName', weight: 0.7}
+            {name: 'versions.file',weight: 0.5}
         ]
     });
 

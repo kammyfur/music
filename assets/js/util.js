@@ -42,9 +42,9 @@ window.onhashchange = window.processHash = () => {
             location.hash = "";
             return;
         }
-        window.playerTitle.innerText = document.title = version.fullName +
+        window.playerTitle.innerText = document.title = version.artist + " - " + version.track +
             (version.edition.length > 0 ? " (" + version.edition.join(", ") + ")" : "") + " [" + version.year + "]";
-        window.player.initialize(window.playerAudio, version.url, true);
+        window.player.initialize(window.playerAudio, "https://watercolor-cdn.floo.fi/records/" + version['cdnId'] + "/stream_dash.mpd", true);
         window.playerAudio.play();
         window.playerModal.classList.add("show");
     }
