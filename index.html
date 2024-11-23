@@ -118,7 +118,7 @@
                 </div>
                 <div class="fella-modal-footer">
                     <div class="fella-modal-footer-left">
-                        <span onclick="modalHide(); document.getElementById('player').classList.remove('show');" class="fella-btn fella-btn-flush fella-btn-secondary">Close</span>
+                        <span onclick="location.hash = ''; modalHide(); document.getElementById('player').classList.remove('show');" class="fella-btn fella-btn-flush fella-btn-secondary">Close</span>
                     </div>
                 </div>
             </div>
@@ -144,6 +144,8 @@
 
     <script src="https://fella.floo.fi/fella.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
+    <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+
     <script src="/assets/js/util.js"></script>
     <script src="/assets/js/loader.js"></script>
 </body>

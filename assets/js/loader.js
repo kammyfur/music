@@ -7,30 +7,23 @@ window.versionTitle = document.getElementById("versions-title");
 window.originalTitle = document.title;
 
 window.onload = async () => {
-    window.dom = document.createElement("div");
-    window.dom.innerHTML = await (await fetch("https://music-cdn.floo.fi/")).text();
-    window.files = Array.from(dom.getElementsByTagName("a")).map(i => i.href)
-        .filter(i => !i.endsWith("/")).map(i => getMetadata(i));
-    window.filesDeduplicated = {};
+    window.files = await (await fetch("https://watercolor-cdn.floo.fi/records/directory.json")).json();
+    window.filesProcessed = [];
 
-    for (let file of files) {
-        if (!(file.id in window.filesDeduplicated)) window.filesDeduplicated[file.id] = {
-            edition: null, artist: null, track: null, original: null, ai: null, versions: []
-        }
-
-        window.filesDeduplicated[file.id]['versions'].push(file);
-    }
-
-    for (let file of Object.values(filesDeduplicated)) {
+    for (let _file of Object.values(files)) {
+        let file = {
+            versions: _file
+        };
         file.year = Math.max(...file.versions.map(i => i.year));
         file.edition = file.versions[0].edition.filter(i => !i.startsWith("v"));
         file.artist = file.versions[0].artist;
         file.track = file.versions[0].track;
         file.original = file.versions[0].original;
         file.ai = file.versions[0].ai;
+        filesProcessed.push(file);
     }
 
-    document.getElementById("js-data-list").innerHTML = Object.values(window.filesDeduplicated)
+    document.getElementById("js-data-list").innerHTML = Object.values(window.filesProcessed)
         .map((i, j) => [i, j])
         .sort((a, b) => a[0].artist.localeCompare(b[0].artist))
         .sort((a, b) => b[0].year - a[0].year)
@@ -68,7 +61,7 @@ window.onload = async () => {
     registerClicks();
 
     // noinspection JSUnresolvedReference
-    window.fuse = new Fuse(Object.values(window.filesDeduplicated), {
+    window.fuse = new Fuse(Object.values(window.filesProcessed), {
         keys: [
             {name: 'artist', weight: 0.9},
             {name: 'track', weight: 1},
@@ -80,7 +73,10 @@ window.onload = async () => {
         ]
     });
 
-    document.getElementById("count").innerText = Object.keys(window.filesDeduplicated).length + " productions";
+    window.player = dashjs.MediaPlayer().create();
+    window.processHash();
+
+    document.getElementById("count").innerText = Object.keys(window.filesProcessed).length + " productions";
     completeLoad();
     document.getElementById("app").style.display = "";
     document.getElementById("search").value = "";

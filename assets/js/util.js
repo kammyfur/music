@@ -23,40 +23,40 @@ function crc32(input) {
     return (-1 ^ n) >>> 0;
 }
 
-function getMetadata(url) {
-    let file = decodeURIComponent(url.split("/")[url.split("/").length - 1]);
+window.onhashchange = window.processHash = () => {
+    modalHide();
+    document.getElementById('player').classList.remove('show');
+    document.getElementById('versions').classList.remove('show');
 
-    let obj = {
-        id: null,
-        url: "https://music-cdn.floo.fi" + new URL(url).pathname,
-        file,
-        fullName: file.replace(/\d+-(.*?)(?:| \(.*\))\..*/gm, "$1"),
-        edition: file.replace(/\d+-.*?(?:| \((.*)\))\..*/gm, "$1")
-            .split(", ").filter(i => i.trim() !== ""),
-        year: parseInt(file.replace(/(\d+)-.*?(?:| \(.*\))\..*/gm, "$1")),
-        artist: file.replace(/\d+-(.*?) - .*?(?:| \(.*\))\..*/gm, "$1"),
-        track: file.replace(/\d+-.*? - (.*?)(?:| \(.*\))\..*/gm, "$1")
-            .replaceAll("[", "(").replaceAll("]", ")"),
-        original: ["Minteck", "Raindrops", "Starscouts", "Judy Hopps", "Judy", "AI"]
-            .includes(file.replace(/\d+-(.*?) - .*?(?:| \(.*\))\..*/gm, "$1")),
-        ai: file.replace(/\d+-(.*?) - .*?(?:| \(.*\))\..*/gm, "$1") === "AI"
-    };
-
-    obj.id = obj.artist + "#" + obj.track + "#" + obj.edition.filter(i => !i.startsWith("v")).join(",");
-    return obj;
+    let hash = location.hash.substring(2);
+    if (location.hash !== "" && hash !== "") {
+        let version;
+        for (let record of window.filesProcessed) {
+            for (let currentVersion of record.versions) {
+                if (currentVersion.id === hash) {
+                    version = currentVersion;
+                }
+            }
+        }
+        if (!version) {
+            location.hash = "";
+            return;
+        }
+        window.playerTitle.innerText = document.title = version.fullName +
+            (version.edition.length > 0 ? " (" + version.edition.join(", ") + ")" : "") + " [" + version.year + "]";
+        window.player.initialize(window.playerAudio, version.url, true);
+        window.playerAudio.play();
+        window.playerModal.classList.add("show");
+    }
 }
 
 function registerClicks(base = "js-data-list-item-") {
-    Object.entries(window.filesDeduplicated).map((i, j) => {
+    Object.entries(window.filesProcessed).map((i, j) => {
         if (document.getElementById(base + j)) document.getElementById(base + j)
             .onclick = () => {
             if (i[1].versions.length < 2) {
                 let version = i[1].versions[0];
-                window.playerTitle.innerText = document.title = version.fullName +
-                    (version.edition.length > 0 ? " (" + version.edition.join(", ") + ")" : "") + " [" + version.year + "]";
-                window.playerAudio.src = version.url;
-                window.playerAudio.play();
-                window.playerModal.classList.add("show");
+                location.hash = "#/" + version.id;
             } else {
                 window.versionTitle.innerText = i[1].track + (i[1].edition.length > 0 ? " (" + i[1].edition.join(", ") + ")" : "")
                 window.versionList.innerHTML = i[1].versions.map((i, j) => [i, j])
@@ -85,12 +85,7 @@ function registerClicks(base = "js-data-list-item-") {
 
                 i[1].versions.map((version, j) => {
                     document.getElementById("versions-item-" + j).onclick = () => {
-                        window.versionModal.classList.remove("show");
-                        window.playerTitle.innerText = document.title = version.fullName +
-                            (version.edition.length > 0 ? " (" + version.edition.join(", ") + ")" : "") + " [" + version.year + "]";
-                        window.playerAudio.src = version.url;
-                        window.playerAudio.play();
-                        window.playerModal.classList.add("show");
+                        location.hash = "#/" + version.id;
                     }
                 });
             }
