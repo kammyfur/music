@@ -146,7 +146,20 @@
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
     <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
 
-    <script src="/assets/js/util.js"></script>
-    <script src="/assets/js/loader.js"></script>
+    <script type="module">
+        console.log("Initializing WebAssembly...");
+        import engine from "/assets/engine/engine.js";
+
+        engine().then(async (_engine) => {
+            window.engine = _engine;
+            console.log("Running WebAssembly...");
+            window.state = (await window.engine.start()).__wbg_ptr;
+            console.log("WebAssembly OK");
+            completeLoad();
+            document.getElementById("app").style.display = "";
+            document.getElementById("search").value = "";
+            document.getElementById("search").focus();
+        });
+    </script>
 </body>
 </html>
