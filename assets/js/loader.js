@@ -7,7 +7,7 @@ window.versionTitle = document.getElementById("versions-title");
 window.originalTitle = document.title;
 
 window.onload = async () => {
-    window.files = await (await fetch("https://watercolor-cdn.floo.fi/records/directory.json")).json();
+    window.files = await (await fetch("https://cdn.floo.fi/watercolor/records/directory.json")).json();
     window.filesProcessed = [];
 
     for (let _file of Object.values(files)) {

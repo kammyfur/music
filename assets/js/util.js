@@ -45,7 +45,7 @@ window.onhashchange = window.processHash = () => {
         }
         window.playerTitle.innerText = document.title = version.artist + " - " + version.track +
             (version.edition.length > 0 ? " (" + version.edition.join(", ") + ")" : "") + " [" + version.year + "]";
-        window.player.initialize(window.playerAudio, "https://watercolor-cdn.floo.fi/records/" + version['cdnId'] + "/stream_dash.mpd", true);
+        window.player.initialize(window.playerAudio, "https://cdn.floo.fi/watercolor/records/" + version['cdnId'] + "/stream_dash.mpd", true);
         window.playerAudio.play();
         window.playerModal.classList.add("show");
     }
