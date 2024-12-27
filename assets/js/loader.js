@@ -72,7 +72,6 @@ window.onload = async () => {
         ]
     });
 
-    window.player = dashjs.MediaPlayer().create();
     window.processHash();
 
     document.getElementById("count").innerText = Object.keys(window.filesProcessed).length + " productions";

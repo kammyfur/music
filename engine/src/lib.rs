@@ -1,20 +1,49 @@
 mod utils;
 
+use std::cell::{OnceCell, RefCell};
+use std::sync::{Arc, Mutex};
 use std::collections::HashMap;
+use std::fs::create_dir_all;
+use std::rc::Rc;
 use serde::{Deserialize, Serialize};
+use wasm_bindgen::closure::WasmClosureFnOnce;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
-use web_sys::{Document, Element, HtmlElement, Node, Request, RequestInit, RequestMode, Response, Window};
-use crate::utils::{log, set_panic_hook};
+use web_sys::{Document, Element, HtmlAudioElement, HtmlElement, HtmlInputElement, Location, Request, RequestInit, RequestMode, Response, Window};
+use crate::utils::{log, initialize_dash, set_panic_hook};
+
+thread_local! {
+    static APPLICATION_STATE: RefCell<State> = unreachable!()
+}
 
 #[wasm_bindgen]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct State {
     window: Window,
+    location: Location,
     document: Document,
     body: HtmlElement,
     directory: Directory,
-    songs: Vec<Song>
+    songs: Vec<Song>,
+    old_title: String,
+    version: VersionModal,
+    player: PlayerModal
+}
+
+#[wasm_bindgen]
+#[derive(Debug, Clone)]
+pub struct VersionModal {
+    modal: Element,
+    list: Element,
+    title: Element
+}
+
+#[wasm_bindgen]
+#[derive(Debug, Clone)]
+pub struct PlayerModal {
+    modal: Element,
+    audio: HtmlAudioElement,
+    title: Element
 }
 
 #[derive(Debug, Clone)]
@@ -46,6 +75,18 @@ pub struct DirectoryEntry {
 #[derive(Debug, Clone)]
 struct Directory(HashMap<String, Vec<DirectoryEntry>>);
 
+pub fn modal_hide(state: &State) {
+    state.location.set_hash("").unwrap();
+    state.document.set_title(&state.old_title);
+    let _ = state.player.audio.pause();
+    state.player.modal.class_list().remove_1("show").unwrap();
+}
+
+#[wasm_bindgen]
+pub fn modal_hide_global() {
+    APPLICATION_STATE.with_borrow(modal_hide);
+}
+
 async fn get_directory() -> Directory {
     let opts = RequestInit::new();
     opts.set_method("GET");
@@ -66,7 +107,49 @@ async fn get_directory() -> Directory {
 }
 
 #[wasm_bindgen]
-pub async fn start() -> State {
+pub fn process_hash_global() {
+    APPLICATION_STATE.with_borrow(process_hash);
+}
+
+pub fn process_hash(state: &State) {
+    modal_hide(state);
+    state.player.modal.class_list().remove_1("show").unwrap();
+    state.version.modal.class_list().remove_1("show").unwrap();
+
+    let hash = state.location.hash().unwrap();
+    let parts: Vec<&str> = hash.split("#/").collect();
+
+    if parts.len() > 1 {
+        let parts: Vec<&str> = parts[1].split('/').collect();
+        let version = state.songs.iter()
+            .map(|s| {
+                s.versions.iter()
+                    .enumerate()
+                    .find(|v| v.1.id == parts[0] && v.0.to_string() == parts[1])
+            })
+            .find(Option::is_some);
+
+        if let Some(Some((index, version))) = version {
+            let mut title = format!("{} - {}", version.artist, version.track);
+            if !version.edition.is_empty() {
+                title.push_str(&format!(" ({})", version.edition.join(", ")));
+            }
+            title.push_str(&format!(" [{}]", version.year));
+            state.player.title.set_text_content(Some(&title));
+            state.document.set_title(&title);
+
+            initialize_dash(&format!("https://cdn.floo.fi/watercolor/records/{}/stream_dash.mpd", version.cdn_id));
+            let _ = state.player.audio.play().unwrap();
+            state.player.modal.class_list().add_1("show").unwrap();
+            state.player.modal.clone().dyn_into::<HtmlElement>().unwrap().focus().unwrap();
+        } else {
+            state.location.set_hash("").unwrap();
+        }
+    }
+}
+
+#[wasm_bindgen]
+pub async fn start() {
     set_panic_hook();
     println!("Hello from Rust!");
 
@@ -86,10 +169,22 @@ pub async fn start() -> State {
 
     let state = State {
         window: window.clone(),
+        location: window.location(),
         document: document.clone(),
         body: body.clone(),
         directory: directory.clone(),
         songs: songs.clone(),
+        old_title: document.title(),
+        version: VersionModal {
+            modal: document.get_element_by_id("versions").unwrap(),
+            list: document.get_element_by_id("versions-list").unwrap(),
+            title: document.get_element_by_id("versions-title").unwrap()
+        },
+        player: PlayerModal {
+            modal: document.get_element_by_id("player").unwrap(),
+            audio: document.get_element_by_id("player-el").unwrap().dyn_into().unwrap(),
+            title: document.get_element_by_id("player-title").unwrap()
+        }
     };
 
     println!("{:#?}", state);
@@ -107,10 +202,31 @@ pub async fn start() -> State {
     songs_enumeration.sort_by(|a, b| a.1.ai.partial_cmp(&b.1.ai).unwrap());
 
     for (id, element) in songs_enumeration {
-        container.append_child(&element.html(&document, id)).unwrap();
+        container.append_child(&element.html(&state, id)).unwrap();
     }
 
-    state
+    document.get_element_by_id("search")
+        .unwrap().dyn_into::<HtmlInputElement>()
+        .unwrap().set_value("");
+    document.get_element_by_id("search")
+        .unwrap().dyn_into::<HtmlElement>()
+        .unwrap().focus().unwrap();
+
+    process_hash(&state);
+    APPLICATION_STATE.set(state);
+
+    let callback = Closure::<dyn FnMut()>::new(process_hash_global);
+    let callback = callback.as_ref().unchecked_ref();
+    window.add_event_listener_with_callback("hashchange", callback).unwrap();
+
+    let callback = &modal_hide_global
+        .into_js_function()
+        .dyn_into()
+        .unwrap();
+    document.get_element_by_id("player-modal-close")
+        .unwrap()
+        .add_event_listener_with_callback("click", callback)
+        .unwrap();
 }
 
 fn hash_text_color(text: &str) -> (u16, u16, u16) {
@@ -148,7 +264,8 @@ impl From<&Directory> for Vec<Song> {
 }
 
 impl Song {
-    fn html(&self, document: &Document, id: usize) -> Element {
+    fn html(&self, state: &State, id: usize) -> HtmlElement {
+        let document = &state.document;
         let element = document.create_element("a").unwrap();
 
         element.set_id(&format!("js-data-list-item-{id}"));
@@ -203,6 +320,8 @@ impl Song {
             ).unwrap();
             element.append_with_node_1(&versions).unwrap();
         }
+
+        let element: HtmlElement = element.dyn_into().unwrap();
 
         element
     }

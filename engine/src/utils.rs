@@ -7,10 +7,16 @@ pub fn set_panic_hook() {
 #[wasm_bindgen]
 extern {
     #[wasm_bindgen(js_namespace = console)]
-    pub fn log(s: &str);
+    pub fn log(message: &str);
 
     #[wasm_bindgen(js_namespace = console)]
-    pub fn error(s: &str);
+    pub fn error(message: &str);
+
+    /*#[wasm_bindgen]
+    pub fn set_title(title: &str);*/
+
+    #[wasm_bindgen]
+    pub fn initialize_dash(url: &str);
 }
 
 #[macro_export]

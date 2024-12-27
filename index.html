@@ -131,7 +131,7 @@
                 </div>
                 <div class="fella-modal-footer">
                     <div class="fella-modal-footer-left">
-                        <span onclick="location.hash = ''; modalHide(); document.getElementById('player').classList.remove('show');" class="fella-btn fella-btn-flush fella-btn-secondary">Close</span>
+                        <span id="player-modal-close" class="fella-btn fella-btn-flush fella-btn-secondary">Close</span>
                     </div>
                 </div>
             </div>
@@ -160,18 +160,14 @@
     <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
 
     <script type="module">
-        console.log("Initializing WebAssembly...");
-        import engine from "/assets/engine/engine.js";
-
-        engine().then(async (_engine) => {
-            window.engine = _engine;
-            console.log("Running WebAssembly...");
-            window.state = (await window.engine.start()).__wbg_ptr;
-            console.log("WebAssembly OK");
+        import * as wasm from "/assets/engine/engine.js";
+        window.wasm = wasm;
+        window.player = dashjs.MediaPlayer().create();
+        window.initialize_dash = (url) => window.player.initialize(document.getElementById("player-el"), url, true);
+        wasm.default().then(async () => {
+            await wasm.start();
             completeLoad();
             document.getElementById("app").style.display = "";
-            document.getElementById("search").value = "";
-            document.getElementById("search").focus();
         });
     </script>
 </body>
