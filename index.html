@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Floofi Music Library</title>
     <link rel="stylesheet" href="https://fella.floo.fi/fella.min.css" crossorigin="anonymous">
     <link rel="shortcut icon" href="/assets/img/favicon.png" type="image/svg+xml">
-    <!--suppress JSUnusedGlobalSymbols -->
     <script>
         let FF_FOUC_FIX;
     </script>
@@ -19,57 +17,7 @@
 </head>
 <body>
     <div id="loader" class="fella-loader-container">
-        <svg class="fella-loader" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" style="shape-rendering: auto; display: block; background: transparent;">
-            <g><g transform="rotate(0 50 50)">
-                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
-                    <animate repeatCount="indefinite" begin="-0.9166666666666666s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
-                </rect>
-            </g><g transform="rotate(30 50 50)">
-                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
-                    <animate repeatCount="indefinite" begin="-0.8333333333333334s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
-                </rect>
-            </g><g transform="rotate(60 50 50)">
-                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
-                    <animate repeatCount="indefinite" begin="-0.75s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
-                </rect>
-            </g><g transform="rotate(90 50 50)">
-                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
-                    <animate repeatCount="indefinite" begin="-0.6666666666666666s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
-                </rect>
-            </g><g transform="rotate(120 50 50)">
-                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
-                    <animate repeatCount="indefinite" begin="-0.5833333333333334s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
-                </rect>
-            </g><g transform="rotate(150 50 50)">
-                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
-                    <animate repeatCount="indefinite" begin="-0.5s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
-                </rect>
-            </g><g transform="rotate(180 50 50)">
-                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
-                    <animate repeatCount="indefinite" begin="-0.4166666666666667s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
-                </rect>
-            </g><g transform="rotate(210 50 50)">
-                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
-                    <animate repeatCount="indefinite" begin="-0.3333333333333333s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
-                </rect>
-            </g><g transform="rotate(240 50 50)">
-                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
-                    <animate repeatCount="indefinite" begin="-0.25s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
-                </rect>
-            </g><g transform="rotate(270 50 50)">
-                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
-                    <animate repeatCount="indefinite" begin="-0.16666666666666666s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
-                </rect>
-            </g><g transform="rotate(300 50 50)">
-                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
-                    <animate repeatCount="indefinite" begin="-0.08333333333333333s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
-                </rect>
-            </g><g transform="rotate(330 50 50)">
-                <rect fill="#8f8f8f" height="16" width="5" ry="2.56" rx="2.5" y="22" x="47.5">
-                    <animate repeatCount="indefinite" begin="0s" dur="1s" keyTimes="0;1" values="1;0" attributeName="opacity"></animate>
-                </rect>
-            </g><g></g></g>
-        </svg>
+        <img src="/assets/img/loader.svg" alt="..." class="fella-loader">
     </div>
 
     <main id="app" class="fella-escape" style="display: none;">
@@ -92,7 +40,7 @@
                 or missing audio. There is unfortunately nothing we can do about this as it means the original files
                 have been lost and corrupted.
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSdKpkB_oqPVQ_jI7kkOrcErk2fBPKDVSQ42ewk_QkBoP3-5ZQ/viewform"
-                   target="_blank">Sign up to get notifications when new releases are published.</a>
+                   target="_blank" referrerpolicy="no-referrer">Sign up to get notifications when new releases are published.</a>
             </div>
             <input type="text" class="fella-form-control" style="width: calc(100% - 36px); margin-top: 20px; margin-bottom: 20px;"
                    autofocus placeholder="Search for some cover or production..." id="search" onkeydown="wasm.search();"
@@ -105,7 +53,7 @@
                 Unless mentioned otherwise, all content on this website is © Floofi Systems. All songs belong to their
                 original creators, and you can <a class="link" target="_blank" href="https://floo.fi/contact/start?i=10">
                 contact us to report a copyright infrigment</a>. AI-generated songs are made with <a class="link"
-                target="_blank" href="https://suno.com">Suno</a>.
+                target="_blank" href="https://suno.com" referrerpolicy="no-referrer">Suno</a>.
             </footer>
 
             <br><br><br>
@@ -138,7 +86,7 @@
                 </div>
                 <div class="fella-modal-footer">
                     <div class="fella-modal-footer-left">
-                        <span onclick="document.getElementById('versions').classList.remove('show');" class="fella-btn fella-btn-flush fella-btn-secondary">Close</span>
+                        <span onclick="version.classList.remove('show');" class="fella-btn fella-btn-flush fella-btn-secondary">Close</span>
                     </div>
                 </div>
             </div>
@@ -146,10 +94,10 @@
     </div>
 
     <script src="https://fella.floo.fi/fella.min.js"></script>
-    <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+    <script src="https://cdn.dashjs.org/latest/dash.all.min.js" referrerpolicy="no-referrer"></script>
 
     <script type="module">
-        window.player=dashjs.MediaPlayer().create();window.initialize_dash=(url)=>window.player.initialize(document.getElementById("player-el"), url, true);
+        window.player=dashjs.MediaPlayer().create();window.initialize_dash=(url)=>window.player.initialize(window['player-el'], url, true);
         import * as wasm from "/assets/engine/engine.js";window.wasm=wasm;wasm.default();
     </script>
 </body>

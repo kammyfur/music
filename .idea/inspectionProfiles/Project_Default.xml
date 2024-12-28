@@ -4,6 +4,7 @@
     <inspection_tool class="CargoTomlCyclicFeature" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="CrateNotFound" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CrateVersionInvalid" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="CssUnusedSymbol" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="DuplicatedCode" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="HtmlFormInputWithoutLabel" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
@@ -18,6 +19,9 @@
       <option name="myCustomValuesEnabled" value="true" />
     </inspection_tool>
     <inspection_tool class="InvalidPackageCategory" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="JSUnresolvedLibraryURL" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSUnusedGlobalSymbols" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="JSUnusedLocalSymbols" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="MissingFeatures" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="NewCrateVersionAvailable" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyPep8Inspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
