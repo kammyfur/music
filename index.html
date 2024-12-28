@@ -7,24 +7,14 @@
     <title>Floofi Music Library</title>
     <link rel="stylesheet" href="https://fella.floo.fi/fella.min.css" crossorigin="anonymous">
     <link rel="shortcut icon" href="/assets/img/favicon.png" type="image/svg+xml">
-    <script defer data-domain="music.floo.fi" src="https://insights.floo.fi/js/script.file-downloads.hash.outbound-links.js"></script>
-    <script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
     <!--suppress JSUnusedGlobalSymbols -->
     <script>
         let FF_FOUC_FIX;
     </script>
     <style>
-        .fella-list-item {
-            cursor: pointer;
-        }
-
-        .fella-list-item .fella-footnotes {
-            margin-top: 0;
-        }
-
-        .fella-list-item .fella-badge-notice {
-            margin-left: 5px;
-        }
+        .fella-list-item { cursor: pointer; }
+        .fella-list-item .fella-footnotes { margin-top: 0; }
+        .fella-list-item .fella-badge-notice { margin-left: 5px; margin-right: 5px; }
     </style>
 </head>
 <body>
@@ -91,7 +81,7 @@
                     </a>
                 </div>
                 <div class="fella-nav-right">
-                    <span id="count" class="fella-nav-subtitle">Loading...</span>
+                    <span id="count" class="fella-nav-subtitle"></span>
                 </div>
             </div>
         </nav>
@@ -105,8 +95,8 @@
                    target="_blank">Sign up to get notifications when new releases are published.</a>
             </div>
             <input type="text" class="fella-form-control" style="width: calc(100% - 36px); margin-top: 20px; margin-bottom: 20px;"
-                   autofocus placeholder="Search for some cover or production..." id="search" onkeydown="search();"
-                   onkeyup="search();" onchange="search();">
+                   autofocus placeholder="Search for some cover or production..." id="search" onkeydown="wasm.search();"
+                   onkeyup="wasm.search();" onchange="wasm.search();">
 
             <div class="fella-list-container" id="js-data-list"></div>
             <div class="fella-list-container" id="js-data-results" style="display: none;"></div>
@@ -156,19 +146,11 @@
     </div>
 
     <script src="https://fella.floo.fi/fella.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
     <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
 
     <script type="module">
-        import * as wasm from "/assets/engine/engine.js";
-        window.wasm = wasm;
-        window.player = dashjs.MediaPlayer().create();
-        window.initialize_dash = (url) => window.player.initialize(document.getElementById("player-el"), url, true);
-        wasm.default().then(async () => {
-            await wasm.start();
-            completeLoad();
-            document.getElementById("app").style.display = "";
-        });
+        window.player=dashjs.MediaPlayer().create();window.initialize_dash=(url)=>window.player.initialize(document.getElementById("player-el"), url, true);
+        import * as wasm from "/assets/engine/engine.js";window.wasm=wasm;wasm.default();
     </script>
 </body>
 </html>

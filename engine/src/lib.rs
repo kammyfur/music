@@ -1,36 +1,25 @@
 mod utils;
 
-use std::cell::{OnceCell, RefCell};
-use std::sync::{Arc, Mutex};
 use std::collections::HashMap;
-use std::fs::create_dir_all;
-use std::rc::Rc;
 use serde::{Deserialize, Serialize};
-use wasm_bindgen::closure::WasmClosureFnOnce;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
-use web_sys::{Document, Element, HtmlAudioElement, HtmlElement, HtmlInputElement, Location, Request, RequestInit, RequestMode, Response, Window};
-use crate::utils::{log, initialize_dash, set_panic_hook};
+use web_sys::{Document, Element, HtmlAudioElement, HtmlElement, HtmlInputElement, Location, Request, RequestInit, RequestMode, Response};
+use crate::utils::{initialize_dash, set_panic_hook, eval, fella_complete_load};
 
-thread_local! {
-    static APPLICATION_STATE: RefCell<State> = unreachable!()
-}
+static mut APPLICATION_STATE: Option<State> = None;
 
-#[wasm_bindgen]
 #[derive(Debug, Clone)]
 pub struct State {
-    window: Window,
     location: Location,
     document: Document,
-    body: HtmlElement,
-    directory: Directory,
     songs: Vec<Song>,
     old_title: String,
     version: VersionModal,
-    player: PlayerModal
+    player: PlayerModal,
+    search: HtmlInputElement
 }
 
-#[wasm_bindgen]
 #[derive(Debug, Clone)]
 pub struct VersionModal {
     modal: Element,
@@ -38,7 +27,6 @@ pub struct VersionModal {
     title: Element
 }
 
-#[wasm_bindgen]
 #[derive(Debug, Clone)]
 pub struct PlayerModal {
     modal: Element,
@@ -75,16 +63,19 @@ pub struct DirectoryEntry {
 #[derive(Debug, Clone)]
 struct Directory(HashMap<String, Vec<DirectoryEntry>>);
 
-pub fn modal_hide(state: &State) {
-    state.location.set_hash("").unwrap();
+#[wasm_bindgen]
+pub fn modal_hide() {
+    let state = get_state();
     state.document.set_title(&state.old_title);
     let _ = state.player.audio.pause();
     state.player.modal.class_list().remove_1("show").unwrap();
 }
 
-#[wasm_bindgen]
-pub fn modal_hide_global() {
-    APPLICATION_STATE.with_borrow(modal_hide);
+#[allow(static_mut_refs)]
+fn get_state<'a>() -> &'a State {
+    unsafe {
+        APPLICATION_STATE.as_ref().unwrap()
+    }
 }
 
 async fn get_directory() -> Directory {
@@ -103,20 +94,17 @@ async fn get_directory() -> Directory {
     let json = JsFuture::from(response.text().unwrap()).await
         .unwrap().as_string().unwrap();
 
-    Directory(serde_json::from_str(&json).unwrap(),)
+    Directory(serde_json::from_str(&json).unwrap())
 }
 
 #[wasm_bindgen]
-pub fn process_hash_global() {
-    APPLICATION_STATE.with_borrow(process_hash);
-}
-
-pub fn process_hash(state: &State) {
-    modal_hide(state);
+pub fn process_hash() {
+    let state = get_state();
+    let hash = state.location.hash().unwrap();
+    modal_hide();
     state.player.modal.class_list().remove_1("show").unwrap();
     state.version.modal.class_list().remove_1("show").unwrap();
 
-    let hash = state.location.hash().unwrap();
     let parts: Vec<&str> = hash.split("#/").collect();
 
     if parts.len() > 1 {
@@ -129,7 +117,7 @@ pub fn process_hash(state: &State) {
             })
             .find(Option::is_some);
 
-        if let Some(Some((index, version))) = version {
+        if let Some(Some((_, version))) = version {
             let mut title = format!("{} - {}", version.artist, version.track);
             if !version.edition.is_empty() {
                 title.push_str(&format!(" ({})", version.edition.join(", ")));
@@ -148,50 +136,73 @@ pub fn process_hash(state: &State) {
     }
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(start)]
 pub async fn start() {
     set_panic_hook();
-    println!("Hello from Rust!");
 
     let window = web_sys::window().expect("No global `window` exists");
     let document = window.document().expect("Should have a document on window");
-    let body = document.body().expect("Document should have a body");
-
-    println!("Fetching directory...");
 
     let directory: Directory = get_directory().await;
-    println!("Got {} directory entries", directory.0.len());
     document.get_element_by_id("count")
         .unwrap()
         .set_text_content(Some(&format!("{} productions", directory.0.len())));
 
     let songs: Vec<Song> = (&directory).into();
 
-    let state = State {
-        window: window.clone(),
-        location: window.location(),
-        document: document.clone(),
-        body: body.clone(),
-        directory: directory.clone(),
-        songs: songs.clone(),
-        old_title: document.title(),
-        version: VersionModal {
-            modal: document.get_element_by_id("versions").unwrap(),
-            list: document.get_element_by_id("versions-list").unwrap(),
-            title: document.get_element_by_id("versions-title").unwrap()
-        },
-        player: PlayerModal {
-            modal: document.get_element_by_id("player").unwrap(),
-            audio: document.get_element_by_id("player-el").unwrap().dyn_into().unwrap(),
-            title: document.get_element_by_id("player-title").unwrap()
+    unsafe {
+        APPLICATION_STATE = Some(State {
+            location: window.location(),
+            document: document.clone(),
+            songs: songs.clone(),
+            old_title: document.title(),
+            version: VersionModal {
+                modal: document.get_element_by_id("versions").unwrap(),
+                list: document.get_element_by_id("versions-list").unwrap(),
+                title: document.get_element_by_id("versions-title").unwrap()
+            },
+            player: PlayerModal {
+                modal: document.get_element_by_id("player").unwrap(),
+                audio: document.get_element_by_id("player-el").unwrap().dyn_into().unwrap(),
+                title: document.get_element_by_id("player-title").unwrap()
+            },
+            search: document.get_element_by_id("search").unwrap().dyn_into().unwrap()
+        });
+    }
+
+    populate_list(&songs, "js-data-list");
+
+    document.get_element_by_id("search")
+        .unwrap().dyn_into::<HtmlInputElement>()
+        .unwrap().set_value("");
+    document.get_element_by_id("search")
+        .unwrap().dyn_into::<HtmlElement>()
+        .unwrap().focus().unwrap();
+
+    process_hash();
+    eval("window.addEventListener('hashchange', () => wasm.process_hash());");
+    eval("document.getElementById('player-modal-close').addEventListener('click', () => { wasm.modal_hide(); location.hash = ''; });");
+    eval("document.getElementById('app').style.display = '';"); // TODO: There has to be a better way to do this
+    fella_complete_load();
+}
+
+fn register_clicks(base: &str) {
+    let state = get_state();
+    for index in 0..state.songs.len() {
+        let id = &format!("{base}{index}");
+        if let Some(el) = state.document.get_element_by_id(id) {
+            eval(&format!("document.getElementById('{}').addEventListener('click', () => {{ wasm.select_song({index}); }});", el.id()));
         }
-    };
+    }
+}
 
-    println!("{:#?}", state);
-    println!("Filling HTML...");
-    let container = document.get_element_by_id("js-data-list").unwrap();
+fn populate_list(list: &[Song], id: &str) {
+    let state = get_state();
+    let document = &state.document;
+    let container = document.get_element_by_id(id).unwrap();
+    container.set_inner_html("");
 
-    let mut songs_enumeration = songs
+    let mut songs_enumeration = list
         .iter()
         .enumerate()
         .collect::<Vec<(usize, &Song)>>();
@@ -201,32 +212,49 @@ pub async fn start() {
     songs_enumeration.sort_by(|a, b| b.1.year.partial_cmp(&a.1.year).unwrap());
     songs_enumeration.sort_by(|a, b| a.1.ai.partial_cmp(&b.1.ai).unwrap());
 
-    for (id, element) in songs_enumeration {
-        container.append_child(&element.html(&state, id)).unwrap();
+    for (eid, element) in songs_enumeration {
+        container.append_child(&element.html(eid, id)).unwrap();
     }
 
-    document.get_element_by_id("search")
-        .unwrap().dyn_into::<HtmlInputElement>()
-        .unwrap().set_value("");
-    document.get_element_by_id("search")
-        .unwrap().dyn_into::<HtmlElement>()
-        .unwrap().focus().unwrap();
+    register_clicks(&format!("{id}-item-"));
+}
 
-    process_hash(&state);
-    APPLICATION_STATE.set(state);
+#[wasm_bindgen]
+pub fn select_song(index: usize) {
+    let state = get_state();
+    let song = &state.songs[index];
 
-    let callback = Closure::<dyn FnMut()>::new(process_hash_global);
-    let callback = callback.as_ref().unchecked_ref();
-    window.add_event_listener_with_callback("hashchange", callback).unwrap();
+    if song.versions.len() < 2 {
+        let version = &song.versions[0];
+        state.location.set_hash(&format!("#/{}/0", version.id)).unwrap();
+    } else {
+        let mut title = song.track.clone();
+        if !song.edition.is_empty() {
+            title.push_str(&format!(" ({})", song.edition.join(", ")));
+        }
+        state.version.title.set_text_content(Some(&title));
+        state.version.list.set_inner_html("");
 
-    let callback = &modal_hide_global
-        .into_js_function()
-        .dyn_into()
-        .unwrap();
-    document.get_element_by_id("player-modal-close")
-        .unwrap()
-        .add_event_listener_with_callback("click", callback)
-        .unwrap();
+        let versions = song.versions.clone();
+        let mut versions: Vec<(usize, &DirectoryEntry)> = versions
+            .iter()
+            .enumerate()
+            .collect();
+        versions.sort_by(|(_, va), (_, vb)| va.file.partial_cmp(&vb.file).unwrap());
+        versions.sort_by(|(_, va), (_, vb)| va.edition.len().partial_cmp(&vb.edition.len()).unwrap());
+        versions.sort_by(|(_, va), (_, vb)| vb.year.partial_cmp(&va.year).unwrap());
+
+        for (id, entry) in versions {
+            state.version.list.append_child(&entry.html(id)).unwrap();
+        }
+
+        for (index, version) in song.versions.iter().enumerate() {
+            eval(&format!("document.getElementById('versions-item-{index}').addEventListener('click', () => {{ location.hash = \"#/{}/{index}\"; }});",
+                version.id));
+        }
+
+        state.version.modal.class_list().add_1("show").unwrap();
+    }
 }
 
 fn hash_text_color(text: &str) -> (u16, u16, u16) {
@@ -238,6 +266,30 @@ fn hash_text_color(text: &str) -> (u16, u16, u16) {
         u16::from(bytes[1]) + 64,
         u16::from(bytes[2]) + 64
     )
+}
+
+fn get_search_results(query: &str) -> Vec<Song> {
+    let state = get_state();
+    let query = query.to_lowercase();
+    state.songs.clone().into_iter()
+        .filter(|x| x.track.to_lowercase().contains(&query) || x.artist.to_lowercase().contains(&query))
+        .collect()
+}
+
+#[wasm_bindgen]
+pub fn search() {
+    let state = get_state();
+    let query = state.search.value();
+
+    if query.is_empty() {
+        eval("document.getElementById('js-data-list').style.display = '';");
+        eval("document.getElementById('js-data-results').style.display = 'none';");
+    } else {
+        let results = get_search_results(&query);
+        populate_list(&results, "js-data-results");
+        eval("document.getElementById('js-data-list').style.display = 'none';");
+        eval("document.getElementById('js-data-results').style.display = '';");
+    }
 }
 
 impl From<&Directory> for Vec<Song> {
@@ -264,11 +316,12 @@ impl From<&Directory> for Vec<Song> {
 }
 
 impl Song {
-    fn html(&self, state: &State, id: usize) -> HtmlElement {
+    fn html(&self, id: usize, prefix: &str) -> HtmlElement {
+        let state = get_state();
         let document = &state.document;
         let element = document.create_element("a").unwrap();
 
-        element.set_id(&format!("js-data-list-item-{id}"));
+        element.set_id(&format!("{prefix}-item-{id}"));
         element.class_list().add_3("fella-list-item", "fella-list-link", "fella-list-item-padded")
             .unwrap();
 
@@ -322,7 +375,45 @@ impl Song {
         }
 
         let element: HtmlElement = element.dyn_into().unwrap();
+        element
+    }
+}
 
+impl DirectoryEntry {
+    fn html(&self, id: usize) -> HtmlElement {
+        let state = get_state();
+        let document = &state.document;
+        let element = document.create_element("a").unwrap();
+
+        element.class_list().add_3("fella-list-item", "fella-list-link", "fella-list-item-padded")
+            .unwrap();
+        element.set_id(&format!("versions-item-{id}"));
+
+        let year = document.create_element("span").unwrap();
+        year.set_text_content(Some(&self.year.to_string()));
+        year.class_list().add_1("fella-badge-notice").unwrap();
+        let hash = hash_text_color(&self.year.to_string());
+        year.set_attribute("style",
+            &format!("--fella-badge-notice-rgb: {},{},{} !important;", hash.0, hash.1, hash.2)
+        ).unwrap();
+        element.append_with_node_1(&year).unwrap();
+
+        let track = document.create_element("span").unwrap();
+        track.set_text_content(Some(&self.track));
+        element.append_with_node_1(&track).unwrap();
+
+        for ed in &self.edition {
+            let edition = document.create_element("span").unwrap();
+            edition.class_list().add_1("fella-badge-notice").unwrap();
+            edition.set_text_content(Some(ed));
+            let hash = hash_text_color(ed);
+            edition.set_attribute("style",
+                &format!("--fella-badge-notice-rgb: {},{},{} !important;", hash.0, hash.1, hash.2)
+            ).unwrap();
+            element.append_with_node_1(&edition).unwrap();
+        }
+
+        let element: HtmlElement = element.dyn_into().unwrap();
         element
     }
 }
