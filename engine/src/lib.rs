@@ -71,6 +71,12 @@ pub fn modal_hide() {
     state.player.modal.class_list().remove_1("show").unwrap();
 }
 
+#[wasm_bindgen]
+pub fn version_hide() {
+    let state = get_state();
+    state.version.modal.class_list().remove_1("show").unwrap();
+}
+
 #[allow(static_mut_refs)]
 fn get_state<'a>() -> &'a State {
     unsafe {
