@@ -6,12 +6,6 @@ pub fn set_panic_hook() {
 
 #[wasm_bindgen]
 extern {
-    /*#[wasm_bindgen(js_namespace = console)]
-    pub fn log(message: &str);
-
-    #[wasm_bindgen(js_namespace = console)]
-    pub fn error(message: &str);*/
-
     #[wasm_bindgen]
     pub fn initialize_dash(url: &str);
 
@@ -22,12 +16,13 @@ extern {
     pub fn fella_complete_load();
 }
 
-/*#[macro_export]
-macro_rules! println {
-    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
+pub fn hash_text_color(text: &str) -> (u16, u16, u16) {
+    let crc = crc::Crc::<u32>::new(&crc::CRC_32_BZIP2);
+    let sum = crc.checksum(text.as_bytes());
+    let bytes = sum.to_ne_bytes();
+    (
+        u16::from(bytes[0]) + 64,
+        u16::from(bytes[1]) + 64,
+        u16::from(bytes[2]) + 64
+    )
 }
-
-#[macro_export]
-macro_rules! eprintln {
-    ($($t:tt)*) => (error(&format_args!($($t)*).to_string()))
-}*/
