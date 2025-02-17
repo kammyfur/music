@@ -26,6 +26,15 @@
           "value": "public, s-maxage=3600, maxage=86400, stale-while-revalidate=300, stale-if-error=86400"
         }
       ]
+    },
+    {
+      "source": "(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        }
+      ]
     }
   ]
 }
