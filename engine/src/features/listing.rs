@@ -5,7 +5,7 @@ use crate::models::directory::DirectoryEntry;
 use crate::models::song::Song;
 use crate::utils::eval;
 
-pub fn populate_list(list: &[(usize, Song)], id: &str) {
+pub fn populate_list(list: &[(usize, Song)], id: &str, show_year: bool) {
     let state = get_state();
     let document = &state.document;
     let container = document.get_element_by_id(id).unwrap();
@@ -19,10 +19,19 @@ pub fn populate_list(list: &[(usize, Song)], id: &str) {
     songs_enumeration.sort_by(|a, b| a.1.1.track.to_lowercase().partial_cmp(&b.1.1.track.to_lowercase()).unwrap());
     songs_enumeration.sort_by(|a, b| a.1.1.artist.to_lowercase().partial_cmp(&b.1.1.artist.to_lowercase()).unwrap());
     songs_enumeration.sort_by(|a, b| b.1.1.year.partial_cmp(&a.1.1.year).unwrap());
+    songs_enumeration.sort_by(|a, b| b.1.1.ts.partial_cmp(&a.1.1.ts).unwrap());
     songs_enumeration.sort_by(|a, b| a.1.1.ai.partial_cmp(&b.1.1.ai).unwrap());
 
+    let mut last_year = 0;
+
     for (eid, (rid, element)) in songs_enumeration {
-        container.append_child(&element.html(eid, *rid, id)).unwrap();
+        let show_current_year = if (!show_year && element.year != last_year) || show_year {
+            last_year = element.year;
+            true
+        } else {
+            false
+        };
+        container.append_child(&element.html(eid, *rid, id, show_current_year)).unwrap();
     }
 
     register_clicks(&format!("{id}-item-"));
@@ -52,6 +61,7 @@ pub fn select_song(index: usize) {
         versions.sort_by(|(_, va), (_, vb)| va.file.partial_cmp(&vb.file).unwrap());
         versions.sort_by(|(_, va), (_, vb)| va.edition.len().partial_cmp(&vb.edition.len()).unwrap());
         versions.sort_by(|(_, va), (_, vb)| vb.year.partial_cmp(&va.year).unwrap());
+        versions.sort_by(|(_, va), (_, vb)| vb.ts.partial_cmp(&va.ts).unwrap());
 
         for (id, entry) in versions {
             state.version.list.append_child(&entry.html(id)).unwrap();

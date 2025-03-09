@@ -23,7 +23,7 @@ pub fn search() {
         eval("document.getElementById('js-data-results').style.display = 'none';");
     } else {
         let results = get_search_results(&query);
-        populate_list(&results, "js-data-results");
+        populate_list(&results, "js-data-results", true);
         eval("document.getElementById('js-data-list').style.display = 'none';");
         eval("document.getElementById('js-data-results').style.display = '';");
     }

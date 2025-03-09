@@ -13,5 +13,6 @@ pub struct VersionModal {
 pub struct PlayerModal {
     pub modal: Element,
     pub audio: HtmlAudioElement,
-    pub title: Element
+    pub title: Element,
+    pub date: Element
 }

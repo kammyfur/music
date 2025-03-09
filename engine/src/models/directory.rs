@@ -15,6 +15,8 @@ pub struct DirectoryEntry {
     pub file: String,
     pub edition: Vec<String>,
     pub year: u32,
+    pub ts: u64,
+    pub date: Option<String>,
     pub artist: String,
     pub track: String,
     pub original: bool,
@@ -35,9 +37,15 @@ impl DirectoryEntry {
         element.set_id(&format!("versions-item-{id}"));
 
         let year = document.create_element("span").unwrap();
-        year.set_text_content(Some(&self.year.to_string()));
+        let mut text = &self.year.to_string();
+
+        if let Some(date) = &self.date {
+            text = date;
+        }
+
+        year.set_text_content(Some(text));
         year.class_list().add_1("fella-badge-notice").unwrap();
-        let hash = hash_text_color(&self.year.to_string());
+        let hash = hash_text_color(text);
         year.set_attribute("style",
                            &format!("--fella-badge-notice-rgb: {},{},{} !important;", hash.0, hash.1, hash.2)
         ).unwrap();
@@ -81,6 +89,14 @@ impl From<&Directory> for Vec<Song> {
                 track: entries[0].track.clone(),
                 original: entries[0].original,
                 ai: entries[0].ai,
+                date: entries.iter()
+                    .map(|i| i.date.clone())
+                    .max()
+                    .unwrap(),
+                ts: entries.iter()
+                    .map(|i| i.ts)
+                    .max()
+                    .unwrap(),
             })
             .collect()
     }

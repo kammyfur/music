@@ -34,13 +34,14 @@ pub async fn load() {
         player: PlayerModal {
             modal: document.get_element_by_id("player").unwrap(),
             audio: document.get_element_by_id("player-el").unwrap().dyn_into().unwrap(),
-            title: document.get_element_by_id("player-title").unwrap()
+            title: document.get_element_by_id("player-title").unwrap(),
+            date: document.get_element_by_id("player-date").unwrap()
         },
         search: document.get_element_by_id("search").unwrap().dyn_into().unwrap()
     });
 
     let songs_enumerated: Vec<(usize, Song)> = songs.into_iter().enumerate().collect();
-    populate_list(&songs_enumerated, "js-data-list");
+    populate_list(&songs_enumerated, "js-data-list", false);
 
     document.get_element_by_id("search")
         .unwrap().dyn_into::<HtmlInputElement>()

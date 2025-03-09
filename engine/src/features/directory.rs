@@ -9,7 +9,7 @@ pub async fn get_directory() -> Directory {
     opts.set_method("GET");
     opts.set_mode(RequestMode::Cors);
 
-    let request = Request::new_with_str_and_init("https://cdn.floo.fi/watercolor/records/directory.json", &opts)
+    let request = Request::new_with_str_and_init("https://media.music.floo.fi/directory.json", &opts)
         .unwrap();
 
     let window = web_sys::window().unwrap();

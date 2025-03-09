@@ -45,7 +45,13 @@ pub fn process_hash() {
             state.player.title.set_text_content(Some(&title));
             state.document.set_title(&title);
 
-            initialize_dash(&format!("https://cdn.floo.fi/watercolor/records/{}/stream_dash.mpd", version.cdn_id));
+            if let Some(date) = &version.date {
+                state.player.date.set_text_content(Some(&format!("Published on {date}")));
+            } else {
+                state.player.date.set_text_content(Some(&format!("Published in {}", version.year)));
+            }
+
+            initialize_dash(&format!("https://media.music.floo.fi/{}/stream_dash.mpd", version.cdn_id));
             let _ = state.player.audio.play().unwrap();
             state.player.modal.class_list().add_1("show").unwrap();
             state.player.modal.clone().dyn_into::<HtmlElement>().unwrap().focus().unwrap();
