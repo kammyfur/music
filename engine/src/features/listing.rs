@@ -1,3 +1,4 @@
+use crate::utils::show_modal;
 use crate::features::state::get_state;
 use crate::register_clicks;
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -72,6 +73,6 @@ pub fn select_song(index: usize) {
                           version.id));
         }
 
-        state.version.modal.class_list().add_1("show").unwrap();
+        show_modal("version");
     }
 }

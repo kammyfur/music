@@ -1,3 +1,5 @@
+use crate::utils::hide_modal;
+use crate::utils::show_modal;
 use crate::features::state::get_state;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -53,7 +55,8 @@ pub fn process_hash() {
 
             initialize_dash(&format!("https://cdn.music.leafia.eu/{}/stream_dash.mpd", version.cdn_id));
             let _ = state.player.audio.play().unwrap();
-            state.player.modal.class_list().add_1("show").unwrap();
+            hide_modal("version");
+            show_modal("player");
             state.player.modal.clone().dyn_into::<HtmlElement>().unwrap().focus().unwrap();
         } else {
             state.location.set_hash("").unwrap();

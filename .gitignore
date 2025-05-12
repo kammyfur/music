@@ -5,5 +5,4 @@ Cargo.lock
 bin/
 pkg/
 wasm-pack.log
-assets/engine
 engine/target

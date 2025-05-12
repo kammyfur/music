@@ -30,19 +30,19 @@ impl Song {
 
         if show_year {
             let year_span = document.create_element("span").unwrap();
-            year_span.class_list().add_1("fella-footnotes").unwrap();
+            //year_span.class_list().add_1("fella-footnotes").unwrap();
             year_span.set_text_content(Some(&self.year.to_string()));
             year.append_with_node_1(&year_span).unwrap();
         }
 
         element.set_attribute("data-real-id", &real_id.to_string()).unwrap();
         element.set_id(&format!("{prefix}-item-{id}"));
-        element.class_list().add_3("fella-list-item", "fella-list-link", "fella-list-item-padded")
+        element.class_list().add_2("list-group-item", "list-group-item-action")
             .unwrap();
 
         if !self.ai && !self.original {
             let artist = document.create_element("span").unwrap();
-            artist.class_list().add_1("fella-footnotes").unwrap();
+            //artist.class_list().add_1("fella-footnotes").unwrap();
             artist.set_text_content(Some(&format!("{} – ", self.artist)));
             content.append_with_node_1(&artist).unwrap();
         }
@@ -53,46 +53,46 @@ impl Song {
 
         for ed in &self.edition {
             let edition = document.create_element("span").unwrap();
-            edition.class_list().add_1("fella-badge-notice").unwrap();
+            edition.class_list().add_1("badge").unwrap();
             edition.set_text_content(Some(ed));
             let hash = hash_text_color(ed);
             edition.set_attribute("style",
-                                  &format!("--fella-badge-notice-rgb: {},{},{} !important;", hash.0, hash.1, hash.2)
+                                  &format!("background-color: rgba({},{},{},.5) !important;", hash.0, hash.1, hash.2)
             ).unwrap();
             badges.append_with_node_1(&edition).unwrap();
         }
 
         if self.ai {
             let badge = document.create_element("span").unwrap();
-            badge.class_list().add_1("fella-badge-notice").unwrap();
+            badge.class_list().add_1("badge").unwrap();
             badge.set_text_content(Some("AI generated"));
-            badge.set_attribute("style", "--fella-badge-notice-rgb: 255,161,212 !important;").unwrap();
+            badge.set_attribute("style", "background-color: rgba(255,161,212,.5) !important;").unwrap();
             badges.append_with_node_1(&badge).unwrap();
         }
 
         if self.original && !self.ai {
             let badge = document.create_element("span").unwrap();
-            badge.class_list().add_1("fella-badge-notice").unwrap();
+            badge.class_list().add_1("badge").unwrap();
             badge.set_text_content(Some("Original"));
-            badge.set_attribute("style", "--fella-badge-notice-rgb: 255,132,146 !important;").unwrap();
+            badge.set_attribute("style", "background-color: rgba(255,132,146,.5) !important;").unwrap();
             badges.append_with_node_1(&badge).unwrap();
         }
 
         if !self.ai && !self.original {
             let badge = document.create_element("span").unwrap();
-            badge.class_list().add_1("fella-badge-notice").unwrap();
+            badge.class_list().add_1("badge").unwrap();
             badge.set_text_content(Some("Cover"));
-            badge.set_attribute("style", "--fella-badge-notice-rgb: 133,255,241 !important;").unwrap();
+            badge.set_attribute("style", "background-color: rgba(133,255,241,.5) !important;").unwrap();
             badges.append_with_node_1(&badge).unwrap();
         }
 
         if self.versions.len() > 1 {
             let versions = document.create_element("span").unwrap();
-            versions.class_list().add_1("fella-badge-notice").unwrap();
+            versions.class_list().add_1("badge").unwrap();
             versions.set_text_content(Some(&format!("{} versions", self.versions.len())));
             let hash = hash_text_color(&self.versions.len().to_string());
             versions.set_attribute("style",
-                                   &format!("--fella-badge-notice-rgb: {},{},{} !important;", hash.0, hash.1, hash.2)
+                                   &format!("background-color: rgba({},{},{},.5) !important;", hash.0, hash.1, hash.2)
             ).unwrap();
             badges.append_with_node_1(&versions).unwrap();
         }

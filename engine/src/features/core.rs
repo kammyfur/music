@@ -8,7 +8,7 @@ use crate::models::modal::{PlayerModal, VersionModal};
 use crate::models::song::Song;
 use crate::models::state::State;
 use crate::process_hash;
-use crate::utils::{eval, fella_complete_load};
+use crate::utils::{eval, complete_load};
 
 pub async fn load() {
     let window = web_sys::window().expect("No global `window` exists");
@@ -54,5 +54,5 @@ pub async fn load() {
     eval("window.addEventListener('hashchange', () => wasm.process_hash());");
     eval("document.getElementById('player-modal-close').addEventListener('click', () => { wasm.modal_hide(); location.hash = ''; });");
     eval("document.getElementById('app').style.display = '';");
-    fella_complete_load();
+    complete_load();
 }

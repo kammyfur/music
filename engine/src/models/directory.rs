@@ -32,7 +32,7 @@ impl DirectoryEntry {
         let document = &state.document;
         let element = document.create_element("a").unwrap();
 
-        element.class_list().add_3("fella-list-item", "fella-list-link", "fella-list-item-padded")
+        element.class_list().add_2("list-group-item", "list-group-item-action")
             .unwrap();
         element.set_id(&format!("versions-item-{id}"));
 
@@ -44,10 +44,10 @@ impl DirectoryEntry {
         }
 
         year.set_text_content(Some(text));
-        year.class_list().add_1("fella-badge-notice").unwrap();
+        year.class_list().add_1("badge").unwrap();
         let hash = hash_text_color(text);
         year.set_attribute("style",
-                           &format!("--fella-badge-notice-rgb: {},{},{} !important;", hash.0, hash.1, hash.2)
+                           &format!("background-color: rgba({},{},{},.5) !important;", hash.0, hash.1, hash.2)
         ).unwrap();
         element.append_with_node_1(&year).unwrap();
 
@@ -57,11 +57,11 @@ impl DirectoryEntry {
 
         for ed in &self.edition {
             let edition = document.create_element("span").unwrap();
-            edition.class_list().add_1("fella-badge-notice").unwrap();
+            edition.class_list().add_1("badge").unwrap();
             edition.set_text_content(Some(ed));
             let hash = hash_text_color(ed);
             edition.set_attribute("style",
-                                  &format!("--fella-badge-notice-rgb: {},{},{} !important;", hash.0, hash.1, hash.2)
+                                  &format!("background-color: rgba({},{},{},.5) !important;", hash.0, hash.1, hash.2)
             ).unwrap();
             element.append_with_node_1(&edition).unwrap();
         }

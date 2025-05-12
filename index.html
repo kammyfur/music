@@ -4,101 +4,117 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Floofi Music Library</title>
-    <link rel="stylesheet" href="https://fella.floo.fi/fella.min.css" crossorigin="anonymous">
-    <link rel="shortcut icon" href="/assets/img/favicon.png" type="image/svg+xml">
+    <link rel="stylesheet" href="/assets/bootstrap/bootstrap.min.css">
+    <link rel="shortcut icon" href="https://leafia.eu/assets/img/avatar-round.webp" type="image/webp">
     <script>
         let FF_FOUC_FIX;
     </script>
     <style>
-        .fella-list-item { cursor: pointer; }
-        .fella-list-item .fella-footnotes { margin-top: 0; }
-        .fella-list-item .fella-badge-notice { margin-left: 5px; margin-right: 5px; }
+        .list-group-item-action { cursor: pointer; }
+        .badge:not(:last-child) { margin-right: 5px; }
     </style>
 </head>
-<body>
-    <div id="loader" class="fella-loader-container">
-        <img src="/assets/img/loader.svg" alt="..." class="fella-loader">
+<body data-bs-theme="dark">
+    <div id="loader" style="position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center;" class="bg-body">
+        <img src="/assets/img/loader.svg" alt="..." style="width: 32px;">
     </div>
 
-    <main id="app" class="fella-escape" style="display: none;">
-        <nav id="navbar" class="fella-nav-no-border fella-nav">
-            <div class="fella-nav-inner">
-                <div class="fella-nav-left">
-                    <a href="/" target="_blank">
-                        <img class="fella-nav-icon" alt="Floofi Music Library" src="/assets/img/wordmark.png">
-                    </a>
-                </div>
-                <div class="fella-nav-right">
-                    <span id="count" class="fella-nav-subtitle"></span>
+    <main id="app" style="display: none;">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">Music Library</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link disabled" aria-disabled="true">
+                                <span id="count"></span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>
 
-        <div class="fella-container" style="margin-top: 20px;">
-            <div class="fella-footnotes fella-section fella-section-linked">While we put our best efforts toward giving
+        <div class="container" style="margin-top: 20px;">
+            <div class="alert alert-secondary">While we put our best efforts toward giving
                 you the highest quality covers and music works possible, you might still encounter covers with corrupted
                 or missing audio. There is unfortunately nothing we can do about this as it means the original files
                 have been lost and corrupted.
                 <a href="https://kammyfur.notion.site/1c1776ba5caa8046903cc62a61714be1?pvs=105"
                    target="_blank" referrerpolicy="no-referrer">Sign up to get notifications when new releases are published.</a>
             </div>
-            <input type="text" class="fella-form-control" style="width: calc(100% - 36px); margin-top: 20px; margin-bottom: 20px;"
+            <input type="text" class="form-control" style="width: calc(100% - 36px); margin-top: 20px; margin-bottom: 20px;"
                    autofocus placeholder="Filter by name..." id="search" onkeydown="wasm.search();"
                    onkeyup="wasm.search();" onchange="wasm.search();" autocomplete="off">
 
-            <div class="fella-list-container" id="js-data-list"></div>
-            <div class="fella-list-container" id="js-data-results" style="display: none;"></div>
+            <div class="list-group" id="js-data-list"></div>
+            <div class="list-group" id="js-data-results" style="display: none;"></div>
 
-            <footer class="fella-footnotes fella-section fella-section-linked">
-                Unless mentioned otherwise, all content on this website is © Floofi Systems. All songs belong to their
-                original creators, and you can <a class="link" target="_blank" href="https://floo.fi/contact/start?i=10">
-                contact us to report a copyright infrigment</a>.
+            <footer class="small text-muted" style="margin-top: 30px; text-align: center;">
+                All songs belong to their original creators, see <a class="link" target="_blank" href="https://leafia.eu">
+                the main website</a> for copyright claims.
             </footer>
 
             <br><br><br>
         </div>
     </main>
 
-    <div class="fella-modal" tabindex="-1" id="player">
-        <div class="fella-modal-dialog">
-            <div class="fella-modal-content">
-                <div class="fella-modal-body">
-                    <h5 class="fella-modal-title"><span id="player-title"></span></h5>
+    <div class="modal fade" tabindex="-1" id="player" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h5 class="modal-title"><span id="player-title"></span></h5>
                     <p id="player-date"></p>
                     <audio id="player-el" controls style="width: 100%;" controlslist="nodownload,nofullscreen,noremoteplayback" disableremoteplayback="yes"></audio>
                 </div>
-                <div class="fella-modal-footer">
-                    <div class="fella-modal-footer-left">
-                        <span id="player-modal-close" class="fella-btn fella-btn-flush fella-btn-secondary">Close</span>
-                    </div>
+                <div class="modal-footer">
+                    <button id="player-modal-close" class="btn btn-secondary">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="fella-modal" tabindex="-1" id="versions">
-        <div class="fella-modal-dialog">
-            <div class="fella-modal-content">
-                <div class="fella-modal-body">
-                    <h5 class="fella-modal-title">Select a version</h5>
+    <div class="modal fade" tabindex="-1" id="versions" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h5 class="modal-title">Select a version</h5>
                     <p>Select the version of "<span id="versions-title"></span>" you want to listen to:</p>
-                    <div id="versions-list" class="fella-list-container"></div>
+                    <div id="versions-list" class="list-group"></div>
                 </div>
-                <div class="fella-modal-footer">
-                    <div class="fella-modal-footer-left">
-                        <span onclick="wasm.version_hide();" class="fella-btn fella-btn-flush fella-btn-secondary">Close</span>
-                    </div>
+                <div class="modal-footer">
+                    <button onclick="wasm.version_hide();" class="btn btn-secondary">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://fella.floo.fi/fella.min.js"></script>
+    <script src="/assets/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="/assets/dash.all.min.js" referrerpolicy="no-referrer"></script>
 
     <script type="module">
         window.player=dashjs.MediaPlayer().create();window.initialize_dash=(url)=>window.player.initialize(window['player-el'], url, true);
         import * as wasm from "/assets/engine/engine.js";window.wasm=wasm;wasm.default();
+
+        window.modals = {
+            version: new bootstrap.Modal(document.getElementById("versions")),
+            player: new bootstrap.Modal(document.getElementById("player"))
+        }
+
+        window.showModal = (modal) => {
+            window.modals[modal].show();
+        }
+
+        window.hideModal = (modal) => {
+            window.modals[modal].hide();
+        }
+
+        window.completeLoad = () => {
+            document.getElementById("loader").style.display = "none";
+        }
     </script>
 </body>
 </html>

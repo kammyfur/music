@@ -13,7 +13,13 @@ extern {
     pub fn eval(code: &str);
 
     #[wasm_bindgen(js_name = completeLoad)]
-    pub fn fella_complete_load();
+    pub fn complete_load();
+
+    #[wasm_bindgen(js_name = showModal)]
+    pub fn show_modal(modal: &str);
+
+    #[wasm_bindgen(js_name = hideModal)]
+    pub fn hide_modal(modal: &str);
 }
 
 pub fn hash_text_color(text: &str) -> (u16, u16, u16) {
