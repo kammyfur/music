@@ -54,8 +54,9 @@
             <div class="list-group" id="js-data-results" style="display: none;"></div>
 
             <footer class="small text-muted" style="margin-top: 30px; text-align: center;">
-                All songs belong to their original creators, see <a class="link" target="_blank" href="https://leafia.eu">
-                the main website</a> for copyright claims.
+                <p>All songs belong to their original creators, see <a class="link" target="_blank" href="https://leafia.eu">
+                    the main website</a> for copyright claims.</p>
+                <svg src="/assets/img/banner.svg"></svg>
             </footer>
 
             <br><br><br>
@@ -96,8 +97,18 @@
     <script src="/assets/dash.all.min.js" referrerpolicy="no-referrer"></script>
 
     <script type="module">
-        window.player=dashjs.MediaPlayer().create();window.initialize_dash=(url)=>window.player.initialize(window['player-el'], url, true);
-        import * as wasm from "/assets/engine/engine.js";window.wasm=wasm;wasm.default();
+        window.player = dashjs.MediaPlayer().create();
+        window.initialize_dash = (url) => window.player.initialize(window['player-el'], url, true);
+
+        import * as wasm from "/assets/engine/engine.js";
+        window.wasm = wasm;
+        wasm.default();
+
+        (async () => {
+            await Promise.all(Array.from(document.querySelectorAll("svg[src]")).map(async (i) => {
+                i.outerHTML = await (await fetch(i.getAttribute("src"))).text();
+            }));
+        })();
 
         window.modals = {
             version: new bootstrap.Modal(document.getElementById("versions")),
