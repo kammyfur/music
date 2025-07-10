@@ -18,7 +18,10 @@ pub async fn get_directory() -> Directory {
 
     let window = web_sys::window().unwrap();
     let response = JsFuture::from(window.fetch_with_request(&request)).await
-        .unwrap();
+        .unwrap_or_else(|_| {
+            utils::navigate("https://cdn.music.leafia.eu/_check");
+            panic!();
+        });
     let response: Response = response.dyn_into().unwrap_or_else(|_| {
         utils::navigate("https://cdn.music.leafia.eu/_check");
         panic!();
