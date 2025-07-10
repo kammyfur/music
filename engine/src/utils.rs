@@ -20,6 +20,9 @@ extern {
 
     #[wasm_bindgen(js_name = hideModal)]
     pub fn hide_modal(modal: &str);
+
+    #[wasm_bindgen(js_name = navigate)]
+    pub fn navigate(page: &str);
 }
 
 pub fn hash_text_color(text: &str) -> (u16, u16, u16) {
