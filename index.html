@@ -11,6 +11,22 @@
         let FF_FOUC_FIX;
     </script>
     <style>
+        @font-face {
+            src: url("https://media.static.leafia.eu/fonts/AtkinsonHyperlegibleNext-Regular.ttf");
+            font-style: normal;
+            font-family: 'Atkinson Hyperlegible Next';
+        }
+
+        @font-face {
+            src: url("https://media.static.leafia.eu/fonts/AtkinsonHyperlegibleNext-Italic.ttf");
+            font-style: italic;
+            font-family: 'Atkinson Hyperlegible Next';
+        }
+
+        body, html {
+            font-family: 'Atkinson Hyperlegible Next', Roboto, -apple-system, system-ui, sans-serif;
+        }
+
         .list-group-item-action { cursor: pointer; }
         .badge:not(:last-child) { margin-right: 5px; }
         .badge { color: inherit; }
