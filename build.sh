@@ -1,7 +1,7 @@
 #!/bin/bash
 cd ./engine
-rm -rf ../assets/engine
-wasm-pack build -t web -d ../assets/engine --no-pack --no-typescript --release
-rm ../assets/engine/.gitignore
-terser ../assets/engine/engine.js > ../assets/engine/engine.min.js
-mv -f ../assets/engine/engine.min.js ../assets/engine/engine.js
+rm -rf ../dist
+wasm-pack build -t web -d ../dist --no-pack --no-typescript --release
+rm ../dist/.gitignore
+terser ../dist/engine.js > ../dist/engine.min.js
+mv -f ../dist/engine.min.js ../dist/engine.js

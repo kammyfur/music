@@ -4,49 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Kammy Music Library</title>
-    <link rel="stylesheet" href="/assets/bootstrap/bootstrap.min.css">
-    <link rel="shortcut icon" href="https://leafia.eu/assets/img/avatar-round.webp" type="image/webp">
+    <link rel="stylesheet" href="https://media.static.leafia.eu/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="https://media.static.leafia.eu/monet/bsmonet.css">
+    <link rel="shortcut icon" href="https://media.static.leafia.eu/avatar/round.webp" type="image/webp">
     <script>
         let FF_FOUC_FIX;
     </script>
     <style>
         .list-group-item-action { cursor: pointer; }
         .badge:not(:last-child) { margin-right: 5px; }
+        .badge { color: inherit; }
     </style>
 </head>
-<body data-bs-theme="dark">
+<body>
+    <img src="https://media.static.leafia.eu/avatar/square.webp" alt="" style="display: none;" class="dynamic-colors-source">
+
     <div id="loader" style="position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center;" class="bg-body">
-        <img src="/assets/img/loader.svg" alt="..." style="width: 32px;">
+        <img src="https://media.static.leafia.eu/music/loader.svg" alt="..." style="width: 32px;">
     </div>
 
     <main id="app" style="display: none;">
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/">Music Library</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link disabled" aria-disabled="true">
-                                <span id="count"></span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+        <div class="container mt-5">
+            <h1>Kammy Music Library</h1>
 
-        <div class="container" style="margin-top: 20px;">
-            <div class="alert alert-secondary">While we put our best efforts toward giving
+            <p id="count"></p>
+
+            <div class="alert alert-secondary">While I put my best efforts toward giving
                 you the highest quality covers and music works possible, you might still encounter covers with corrupted
-                or missing audio. There is unfortunately nothing we can do about this as it means the original files
+                or missing audio. There is unfortunately nothing I can do about this as it means the original files
                 have been lost and corrupted.
                 <a href="https://kammyfur.notion.site/1c1776ba5caa8046903cc62a61714be1?pvs=105"
                    target="_blank" referrerpolicy="no-referrer">Sign up to get notifications when new releases are published.</a>
             </div>
-            <input type="text" class="form-control" style="width: calc(100% - 36px); margin-top: 20px; margin-bottom: 20px;"
+            <input type="text" class="form-control" style="margin-top: 20px; margin-bottom: 20px;"
                    autofocus placeholder="Filter by name..." id="search" onkeydown="wasm.search();"
                    onkeyup="wasm.search();" onchange="wasm.search();" autocomplete="off">
 
@@ -56,7 +46,7 @@
             <footer class="small text-muted" style="margin-top: 30px; text-align: center;">
                 <p>All songs belong to their original creators, see <a class="link" target="_blank" href="https://leafia.eu">
                     the main website</a> for copyright claims.</p>
-                <svg src="/assets/img/banner.svg"></svg>
+                <svg src="https://media.static.leafia.eu/banner.svg"></svg>
             </footer>
 
             <br><br><br>
@@ -93,14 +83,15 @@
         </div>
     </div>
 
-    <script src="/assets/bootstrap/bootstrap.bundle.min.js"></script>
-    <script src="/assets/dash.all.min.js" referrerpolicy="no-referrer"></script>
+    <script src="https://media.static.leafia.eu/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="https://media.static.leafia.eu/monet/color.js" type="module"></script>
+    <script src="https://media.static.leafia.eu/music/dash.all.min.js" referrerpolicy="no-referrer"></script>
 
     <script type="module">
         window.player = dashjs.MediaPlayer().create();
         window.initialize_dash = (url) => window.player.initialize(window['player-el'], url, true);
 
-        import * as wasm from "/assets/engine/engine.js";
+        import * as wasm from "/dist/engine.js";
         window.wasm = wasm;
         wasm.default();
 
