@@ -34,23 +34,36 @@ pub fn process_hash() {
             .map(|s| {
                 s.versions.iter()
                     .enumerate()
-                    .find(|v| v.1.id == parts[0] && v.0.to_string() == parts[1])
+                    .find(|v| v.1.id == parts[0] && v.0.to_string() == parts[1]).map(|e| (s, e.0, e.1))
             })
             .find(Option::is_some);
 
-        if let Some(Some((_, version))) = version {
-            let mut title = format!("{} - {}", version.artist, version.track);
+        if let Some(Some((song, _, version))) = version {
+            let mut title = version.track.clone();
             if !version.edition.is_empty() {
                 title.push_str(&format!(" ({})", version.edition.join(", ")));
             }
-            title.push_str(&format!(" [{}]", version.year));
             state.player.title.set_text_content(Some(&title));
             state.document.set_title(&title);
 
             if let Some(date) = &version.date {
-                state.player.date.set_text_content(Some(&format!("Published on {date}")));
+                state.player.date.set_text_content(Some(date));
             } else {
-                state.player.date.set_text_content(Some(&format!("Published in {}", version.year)));
+                state.player.date.set_text_content(Some(&version.year.to_string()));
+            }
+
+            state.player.quality.set_text_content(Some(&format!("{}-bit {} kHz", version.quality.0, version.quality.1 / 1000)));
+
+            if version.high_res {
+                state.player.hires_audio.set_class_name("is_hires");
+            } else {
+                state.player.hires_audio.set_class_name("");
+            }
+
+            if song.original {
+                state.player.author.set_text_content(Some(&version.artist));
+            } else {
+                state.player.author.set_text_content(Some(&format!("{} (Covery by Kammy)", version.artist)));
             }
 
             initialize_dash(&format!("https://cdn.music.leafia.eu/{}/stream_dash.mpd", version.cdn_id));

@@ -14,5 +14,8 @@ pub struct PlayerModal {
     pub modal: Element,
     pub audio: HtmlAudioElement,
     pub title: Element,
-    pub date: Element
+    pub date: Element,
+    pub author: Element,
+    pub quality: Element,
+    pub hires_audio: Element
 }

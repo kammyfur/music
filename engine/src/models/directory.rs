@@ -13,14 +13,16 @@ pub struct DirectoryEntry {
     #[serde(alias = "cdnId")]
     pub cdn_id: String,
     pub file: String,
+    pub quality: (u8, u32),
+    #[serde(alias = "hiRes")]
+    pub high_res: bool,
     pub edition: Vec<String>,
     pub year: u32,
     pub ts: u64,
     pub date: Option<String>,
     pub artist: String,
     pub track: String,
-    pub original: bool,
-    pub ai: bool
+    pub original: bool
 }
 
 #[derive(Debug, Clone)]
@@ -88,7 +90,6 @@ impl From<&Directory> for Vec<Song> {
                 artist: entries[0].artist.clone(),
                 track: entries[0].track.clone(),
                 original: entries[0].original,
-                ai: entries[0].ai,
                 date: entries.iter()
                     .map(|i| i.date.clone())
                     .max()

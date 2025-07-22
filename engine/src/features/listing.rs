@@ -21,7 +21,6 @@ pub fn populate_list(list: &[(usize, Song)], id: &str, show_year: bool) {
     songs_enumeration.sort_by(|a, b| a.1.1.artist.to_lowercase().partial_cmp(&b.1.1.artist.to_lowercase()).unwrap());
     songs_enumeration.sort_by(|a, b| b.1.1.year.partial_cmp(&a.1.1.year).unwrap());
     songs_enumeration.sort_by(|a, b| b.1.1.ts.partial_cmp(&a.1.1.ts).unwrap());
-    songs_enumeration.sort_by(|a, b| a.1.1.ai.partial_cmp(&b.1.1.ai).unwrap());
 
     let mut last_year = 0;
 

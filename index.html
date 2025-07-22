@@ -30,6 +30,7 @@
         .list-group-item-action { cursor: pointer; }
         .badge:not(:last-child) { margin-right: 5px; }
         .badge { color: inherit; }
+        #player-hra.is_hires { display: initial !important; }
     </style>
 </head>
 <body>
@@ -71,8 +72,26 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    <h5 class="modal-title"><span id="player-title"></span></h5>
-                    <p id="player-date"></p>
+                    <div style="display: grid; grid-template-columns: 1fr max-content; grid-gap: 10px; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center;">
+                            <div>
+                                <h5 class="modal-title"><span id="player-title"></span></h5>
+                                <div id="player-author"></div>
+                                <div id="player-date"></div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <div style="display: grid; grid-template-columns: max-content max-content; grid-gap: 10px;">
+                                <div style="display: flex; align-items: center;" class="text-muted">
+                                    <div>
+                                        <div id="player-quality"></div>
+                                        <div>AAC (256 kbps)</div>
+                                    </div>
+                                </div>
+                                <img id="player-hra" src="https://media.static.leafia.eu/music/hra.webp" alt="Hi-Res Audio" style="display: none; height: 48px; width: 48px;">
+                            </div>
+                        </div>
+                    </div>
                     <audio id="player-el" controls style="width: 100%;" controlslist="nodownload,nofullscreen,noremoteplayback" disableremoteplayback="yes"></audio>
                 </div>
                 <div class="modal-footer">

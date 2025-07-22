@@ -13,8 +13,7 @@ pub struct Song {
     pub edition: Vec<String>,
     pub artist: String,
     pub track: String,
-    pub original: bool,
-    pub ai: bool
+    pub original: bool
 }
 
 impl Song {
@@ -40,7 +39,7 @@ impl Song {
         element.class_list().add_2("list-group-item", "list-group-item-action")
             .unwrap();
 
-        if !self.ai && !self.original {
+        if !self.original {
             let artist = document.create_element("span").unwrap();
             //artist.class_list().add_1("fella-footnotes").unwrap();
             artist.set_text_content(Some(&format!("{} – ", self.artist)));
@@ -62,23 +61,13 @@ impl Song {
             badges.append_with_node_1(&edition).unwrap();
         }
 
-        if self.ai {
-            let badge = document.create_element("span").unwrap();
-            badge.class_list().add_1("badge").unwrap();
-            badge.set_text_content(Some("AI generated"));
-            badge.set_attribute("style", "background-color: rgba(255,161,212,.5) !important;").unwrap();
-            badges.append_with_node_1(&badge).unwrap();
-        }
-
-        if self.original && !self.ai {
+        if self.original {
             let badge = document.create_element("span").unwrap();
             badge.class_list().add_1("badge").unwrap();
             badge.set_text_content(Some("Original"));
             badge.set_attribute("style", "background-color: rgba(255,132,146,.5) !important;").unwrap();
             badges.append_with_node_1(&badge).unwrap();
-        }
-
-        if !self.ai && !self.original {
+        } else {
             let badge = document.create_element("span").unwrap();
             badge.class_list().add_1("badge").unwrap();
             badge.set_text_content(Some("Cover"));
