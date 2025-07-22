@@ -28,8 +28,8 @@
         }
 
         .list-group-item-action { cursor: pointer; }
-        .badge:not(:last-child) { margin-right: 5px; }
-        .badge:not(:first-child) { margin-left: 5px; }
+        .badge:not(:last-child) { margin-right: 3px; }
+        .badge:not(:first-child) { margin-left: 3px; }
         .badge { color: inherit; }
         #player-hra.is_hires { display: initial !important; }
     </style>
@@ -154,6 +154,15 @@
 
         window.navigate = (url) => {
             location.href = url;
+        }
+
+        window.changeURL = (url, replace = false) => {
+            if (replace) {
+                window.history.replaceState({ "pageTitle": document.title }, "", url);
+            } else {
+                window.history.pushState({ "pageTitle": document.title }, "", url);
+            }
+            window.wasm.process_hash();
         }
     </script>
 </body>

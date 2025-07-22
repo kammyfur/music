@@ -5,6 +5,7 @@ use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::wasm_bindgen;
 use web_sys::HtmlElement;
 use crate::features::modal::modal_hide;
+use crate::utils;
 use crate::utils::{eval, initialize_dash};
 
 pub fn register_clicks(base: &str) {
@@ -22,19 +23,30 @@ pub fn register_clicks(base: &str) {
 pub fn process_hash() {
     let state = get_state();
     let hash = state.location.hash().unwrap();
+    let hash_parts: Vec<&str> = hash.split("#/").collect();
+    if hash_parts.len() == 2 {
+        let hash_parts: Vec<&str> = hash_parts[1].split('/').collect();
+        if hash_parts.len() == 2 {
+            state.location.set_href(&format!("/song/{}/version/{}", hash_parts[0], hash_parts[1])).unwrap();
+            return;
+        }
+    }
+
+    let path = state.location.pathname().unwrap();
     modal_hide();
     state.player.modal.class_list().remove_1("show").unwrap();
     state.version.modal.class_list().remove_1("show").unwrap();
 
-    let parts: Vec<&str> = hash.split("#/").collect();
-
-    if parts.len() > 1 {
-        let parts: Vec<&str> = parts[1].split('/').collect();
+    if !path.is_empty() && path.starts_with("/song/") && path.contains("/version/") {
+        let parts: Vec<&str> = path.split('/').collect();
+        if parts.len() != 5 || parts[1] != "song" || parts[3] != "version" {
+            return;
+        }
         let version = state.songs.iter()
             .map(|s| {
                 s.versions.iter()
                     .enumerate()
-                    .find(|v| v.1.id == parts[0] && v.0.to_string() == parts[1]).map(|e| (s, e.0, e.1))
+                    .find(|v| v.1.id == parts[2] && v.0.to_string() == parts[4]).map(|e| (s, e.0, e.1))
             })
             .find(Option::is_some);
 
@@ -72,7 +84,7 @@ pub fn process_hash() {
             show_modal("player");
             state.player.modal.clone().dyn_into::<HtmlElement>().unwrap().focus().unwrap();
         } else {
-            state.location.set_hash("").unwrap();
+            utils::change_url("/", false);
         }
     }
 }

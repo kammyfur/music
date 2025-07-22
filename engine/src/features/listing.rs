@@ -1,6 +1,6 @@
 use crate::utils::show_modal;
 use crate::features::state::get_state;
-use crate::register_clicks;
+use crate::{register_clicks, utils};
 use wasm_bindgen::prelude::wasm_bindgen;
 use crate::models::directory::DirectoryEntry;
 use crate::models::song::Song;
@@ -44,7 +44,7 @@ pub fn select_song(index: usize) {
 
     if song.versions.len() < 2 {
         let version = &song.versions[0];
-        state.location.set_hash(&format!("#/{}/0", version.id)).unwrap();
+        utils::change_url(&format!("/song/{}/version/0", version.id), false);
     } else {
         let mut title = song.track.clone();
         if !song.edition.is_empty() {
@@ -67,11 +67,15 @@ pub fn select_song(index: usize) {
             state.version.list.append_child(&entry.html(id)).unwrap();
         }
 
+        let mut first_version = String::new();
+
         for (index, version) in song.versions.iter().enumerate() {
-            eval(&format!("document.getElementById('versions-item-{index}').addEventListener('click', () => {{ location.hash = \"#/{}/{index}\"; }});",
+            eval(&format!("document.getElementById('versions-item-{index}').addEventListener('click', () => {{ window.changeURL(\"/song/{}/version/{index}\"); }});",
                           version.id));
+            first_version.clone_from(&version.id);
         }
 
+        utils::change_url(&format!("/song/{first_version}"), false);
         show_modal("version");
     }
 }

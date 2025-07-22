@@ -12,6 +12,9 @@ extern {
     #[wasm_bindgen]
     pub fn eval(code: &str);
 
+    #[wasm_bindgen]
+    pub fn alert(msg: &str);
+
     #[wasm_bindgen(js_name = completeLoad)]
     pub fn complete_load();
 
@@ -23,6 +26,9 @@ extern {
 
     #[wasm_bindgen(js_name = navigate)]
     pub fn navigate(page: &str);
+
+    #[wasm_bindgen(js_name = changeURL)]
+    pub fn change_url(url: &str, replace: bool);
 }
 
 pub fn hash_text_color(text: &str) -> (u16, u16, u16) {

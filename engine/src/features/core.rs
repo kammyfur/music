@@ -54,8 +54,8 @@ pub async fn load() {
         .unwrap().focus().unwrap();
 
     process_hash();
-    eval("window.addEventListener('hashchange', () => wasm.process_hash());");
-    eval("document.getElementById('player-modal-close').addEventListener('click', () => { wasm.modal_hide(); location.hash = ''; });");
+    eval("window.addEventListener('popstate', () => wasm.process_hash());");
+    eval("document.getElementById('player-modal-close').addEventListener('click', () => { wasm.modal_hide(); changeURL('/'); });");
     eval("document.getElementById('app').style.display = '';");
     complete_load();
 }
