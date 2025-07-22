@@ -63,7 +63,7 @@ pub fn process_hash() {
             if song.original {
                 state.player.author.set_text_content(Some(&version.artist));
             } else {
-                state.player.author.set_text_content(Some(&format!("{} (Covery by Kammy)", version.artist)));
+                state.player.author.set_text_content(Some(&format!("{} (Cover by Kammy)", version.artist)));
             }
 
             initialize_dash(&format!("https://cdn.music.leafia.eu/{}/stream_dash.mpd", version.cdn_id));
