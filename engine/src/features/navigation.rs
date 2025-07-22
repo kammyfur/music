@@ -52,7 +52,7 @@ pub fn process_hash() {
                 state.player.date.set_text_content(Some(&version.year.to_string()));
             }
 
-            state.player.quality.set_text_content(Some(&format!("{}-bit {} kHz", version.quality.0, version.quality.1 / 1000)));
+            state.player.quality.set_text_content(Some(&format!("{}-bit {} kHz", version.quality.0, f64::from(version.quality.1) / 1000.0)));
 
             if version.high_res {
                 state.player.hires_audio.set_class_name("is_hires");
