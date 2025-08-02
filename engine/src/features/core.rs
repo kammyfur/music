@@ -36,9 +36,7 @@ pub async fn load() {
             audio: document.get_element_by_id("player-el").unwrap().dyn_into().unwrap(),
             title: document.get_element_by_id("player-title").unwrap(),
             date: document.get_element_by_id("player-date").unwrap(),
-            author: document.get_element_by_id("player-author").unwrap(),
-            quality: document.get_element_by_id("player-quality").unwrap(),
-            hires_audio: document.get_element_by_id("player-hra").unwrap()
+            author: document.get_element_by_id("player-author").unwrap()
         },
         search: document.get_element_by_id("search").unwrap().dyn_into().unwrap()
     });

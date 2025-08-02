@@ -5,3 +5,4 @@ wasm-pack build -t web -d ../dist --no-pack --no-typescript --release
 rm ../dist/.gitignore
 terser ../dist/engine.js > ../dist/engine.min.js
 mv -f ../dist/engine.min.js ../dist/engine.js
+cp $HOME/Work/music/kme.min.js ../dist/kme.min.js

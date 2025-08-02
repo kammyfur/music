@@ -10,29 +10,29 @@ pub async fn get_directory() -> Directory {
     opts.set_method("GET");
     opts.set_mode(RequestMode::Cors);
 
-    let request = Request::new_with_str_and_init("https://cdn.music.leafia.eu/directory.json", &opts)
+    let request = Request::new_with_str_and_init(&format!("{}/directory.json", crate::METADATA_CDN_ORIGIN), &opts)
         .unwrap_or_else(|_| {
-            utils::navigate("https://cdn.music.leafia.eu/_check");
+            utils::navigate(&format!("{}/_check", crate::METADATA_CDN_ORIGIN));
             panic!();
         });
 
     let window = web_sys::window().unwrap();
     let response = JsFuture::from(window.fetch_with_request(&request)).await
         .unwrap_or_else(|_| {
-            utils::navigate("https://cdn.music.leafia.eu/_check");
+            utils::navigate(&format!("{}/_check", crate::METADATA_CDN_ORIGIN));
             panic!();
         });
     let response: Response = response.dyn_into().unwrap_or_else(|_| {
-        utils::navigate("https://cdn.music.leafia.eu/_check");
+        utils::navigate(&format!("{}/_check", crate::METADATA_CDN_ORIGIN));
         panic!();
     });
 
     let json = JsFuture::from(response.text().unwrap_or_else(|_| {
-        utils::navigate("https://cdn.music.leafia.eu/_check");
+        utils::navigate(&format!("{}/_check", crate::METADATA_CDN_ORIGIN));
         panic!();
     })).await
         .unwrap_or_else(|_| {
-            utils::navigate("https://cdn.music.leafia.eu/_check");
+            utils::navigate(&format!("{}/_check", crate::METADATA_CDN_ORIGIN));
             panic!();
         }).as_string().unwrap();
 

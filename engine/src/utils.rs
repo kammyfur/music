@@ -7,9 +7,6 @@ pub fn set_panic_hook() {
 #[wasm_bindgen]
 extern {
     #[wasm_bindgen]
-    pub fn initialize_dash(url: &str);
-
-    #[wasm_bindgen]
     pub fn eval(code: &str);
 
     #[wasm_bindgen]

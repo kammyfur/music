@@ -31,7 +31,6 @@
         .badge:not(:last-child) { margin-right: 3px; }
         .badge:not(:first-child) { margin-left: 3px; }
         .badge { color: inherit; }
-        #player-hra.is_hires { display: initial !important; }
     </style>
 </head>
 <body>
@@ -85,15 +84,15 @@
                             <div style="display: grid; grid-template-columns: max-content max-content; grid-gap: 10px;">
                                 <div style="display: flex; align-items: center;" class="text-muted">
                                     <div>
-                                        <div id="player-quality"></div>
-                                        <div>AAC (256 kbps)</div>
+                                        <div id="player-quality">Opus (160 kbps)</div>
+                                        <div>Powered by KME</div>
                                     </div>
                                 </div>
-                                <img id="player-hra" src="https://media.static.leafia.eu/music/hra.webp" alt="Hi-Res Audio" style="display: none; height: 48px; width: 48px;">
+                                <img id="player-kme" src="https://media.static.leafia.eu/music/kme.webp" alt="Kammy Media Encryption" style="width: 48px;">
                             </div>
                         </div>
                     </div>
-                    <audio id="player-el" controls style="width: 100%;" controlslist="nodownload,nofullscreen,noremoteplayback" disableremoteplayback="yes"></audio>
+                    <audio id="player-el" data-kme-enable controls style="width: 100%;" controlslist="nodownload,nofullscreen,noremoteplayback" disableremoteplayback="yes"></audio>
                 </div>
                 <div class="modal-footer">
                     <button id="player-modal-close" class="btn btn-secondary">Close</button>
@@ -120,11 +119,9 @@
     <script src="https://media.static.leafia.eu/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="https://media.static.leafia.eu/monet/color.js" type="module"></script>
     <script src="https://media.static.leafia.eu/music/dash.all.min.js" referrerpolicy="no-referrer"></script>
+    <script src="/dist/kme.min.js"></script>
 
     <script type="module">
-        window.player = dashjs.MediaPlayer().create();
-        window.initialize_dash = (url) => window.player.initialize(window['player-el'], url, true);
-
         import * as wasm from "/dist/engine.js";
         window.wasm = wasm;
         wasm.default();

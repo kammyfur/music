@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::wasm_bindgen;
 use web_sys::HtmlElement;
 use crate::features::modal::modal_hide;
 use crate::utils;
-use crate::utils::{eval, initialize_dash};
+use crate::utils::eval;
 
 pub fn register_clicks(base: &str) {
     let state = get_state();
@@ -64,21 +64,13 @@ pub fn process_hash() {
                 state.player.date.set_text_content(Some(&version.year.to_string()));
             }
 
-            state.player.quality.set_text_content(Some(&format!("{}-bit {} kHz", version.quality.0, f64::from(version.quality.1) / 1000.0)));
-
-            if version.high_res {
-                state.player.hires_audio.set_class_name("is_hires");
-            } else {
-                state.player.hires_audio.set_class_name("");
-            }
-
             if song.original {
                 state.player.author.set_text_content(Some(&version.artist));
             } else {
                 state.player.author.set_text_content(Some(&format!("{} (Cover by Kammy)", version.artist)));
             }
 
-            initialize_dash(&format!("https://cdn.music.leafia.eu/{}/stream_dash.mpd", version.cdn_id));
+            state.player.audio.set_attribute("data-kme-src", &format!("{}/{}", crate::CONTENT_CDN_ORIGIN, version.cdn_id)).unwrap();
             let _ = state.player.audio.play().unwrap();
             hide_modal("version");
             show_modal("player");
