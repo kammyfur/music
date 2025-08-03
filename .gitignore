@@ -6,5 +6,4 @@ bin/
 pkg/
 wasm-pack.log
 engine/target
-dist/kme.min.js
 work
