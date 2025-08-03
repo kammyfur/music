@@ -8,6 +8,7 @@ pub fn modal_hide() {
     let state = get_state();
     state.document.set_title(&state.old_title);
     let _ = state.player.audio.pause();
+    state.player.audio.set_current_time(0f64);
     hide_modal("player");
 }
 
