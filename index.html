@@ -186,8 +186,6 @@
                 i.outerHTML = await (await fetch(i.getAttribute("src"))).text();
             }));
 
-            _initKME();
-
             window.wasm = wasm;
             wasm.default();
         })();
