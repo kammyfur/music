@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-i18n-root="/lang" data-i18n-default="en" data-i18n-languages="en:English,fr:français,es:español">
+<html lang="en" data-i18n-root="/lang" data-i18n-default="en" data-i18n-languages="en:English,fr:français,es:español" data-i18n-safemode>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -48,24 +48,24 @@
 
     <main id="app" style="display: none;">
         <div class="container mt-5">
-            <h1>%lang.title|Kammy%</h1>
+            <h1 data-i18n-content="%lang.title|Kammy%"></h1>
 
             <p id="count"></p>
 
-            <div class="alert alert-secondary">%lang.disclaimer%
+            <div class="alert alert-secondary"><span data-i18n-content="%lang.disclaimer%"></span>
                 <a href="https://kammyfur.notion.site/1c1776ba5caa8046903cc62a61714be1?pvs=105"
-                   target="_blank" referrerpolicy="no-referrer">%lang.signup%</a>
+                   target="_blank" referrerpolicy="no-referrer" data-i18n-content="%lang.signup%"></a>
             </div>
             <input type="text" class="form-control" style="margin-top: 20px; margin-bottom: 20px;"
-                   autofocus placeholder="%lang.filter%" id="search" onkeydown="wasm.search();"
+                   autofocus data-i18n-placeholder="%lang.filter%" id="search" onkeydown="wasm.search();"
                    onkeyup="wasm.search();" onchange="wasm.search();" autocomplete="off">
 
             <div class="list-group" id="js-data-list"></div>
             <div class="list-group" id="js-data-results" style="display: none;"></div>
 
             <footer class="small text-muted" style="margin-top: 30px; text-align: center;">
-                <p>%lang.copyright[0]% <a class="link" target="_blank" href="https://leafia.eu">
-                    %lang.copyright[1]%</a> %lang.copyright[2]%</p>
+                <p><span data-i18n-content="%lang.copyright[0]%"></span> <a class="link" target="_blank" href="https://leafia.eu" data-i18n-content="%lang.copyright[1]%">
+                    </a> <span data-i18n-content="%lang.copyright[2]%">%lang.copyright[2]%</span></p>
                 <svg src="https://media.static.leafia.eu/banner.svg"></svg>
             </footer>
 
@@ -90,7 +90,7 @@
                                 <div style="display: flex; align-items: center;" class="text-muted">
                                     <div>
                                         <div id="player-quality">AAC (256 kbps)</div>
-                                        <div>%lang.cdm|KME%</div>
+                                        <div data-i18n-content="%lang.cdm|KME%"></div>
                                     </div>
                                 </div>
                                 <img id="player-kme" src="https://media.static.leafia.eu/music/kme.webp" alt="Kammy Media Encryption" style="width: 48px;">
@@ -100,7 +100,7 @@
                     <audio id="player-el" data-kme-enable controls style="width: 100%;" controlslist="nodownload,nofullscreen,noremoteplayback" disableremoteplayback="yes"></audio>
                 </div>
                 <div class="modal-footer">
-                    <button id="player-modal-close" class="btn btn-secondary">%lang.close%</button>
+                    <button id="player-modal-close" class="btn btn-secondary" data-i18n-content="%lang.close%"></button>
                 </div>
             </div>
         </div>
@@ -110,12 +110,12 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    <h5 class="modal-title">%lang.versionTitle%</h5>
-                    <p>%lang.versionSelect|<span id="versions-title"></span>%</p>
+                    <h5 class="modal-title" data-i18n-content="%lang.versionTitle%"></h5>
+                    <p data-i18n-content="%lang.versionSelect|<span id='versions-title'></span>%"></p>
                     <div id="versions-list" class="list-group"></div>
                 </div>
                 <div class="modal-footer">
-                    <button onclick="wasm.version_hide();" class="btn btn-secondary">%lang.close%</button>
+                    <button onclick="wasm.version_hide();" class="btn btn-secondary" data-i18n-content="%lang.close%"></button>
                 </div>
             </div>
         </div>
@@ -175,7 +175,7 @@
                 window.wasm.process_hash();
             }
 
-            //await i18nSetup();
+            await i18nSetup();
 
             window.modals = {
                 version: new bootstrap.Modal(document.getElementById("versions")),
@@ -190,6 +190,6 @@
             wasm.default();
         })();
     </script>
-    <!--<script src="https://media.static.leafia.eu/i18n.js"></script>-->
+    <script src="https://media.static.leafia.eu/i18n.js"></script>
 </body>
 </html>
