@@ -10,9 +10,6 @@ extern {
     pub fn eval(code: &str);
 
     #[wasm_bindgen]
-    pub fn l(message: &str) -> String;
-
-    #[wasm_bindgen]
     pub fn alert(msg: &str);
 
     #[wasm_bindgen(js_name = completeLoad)]

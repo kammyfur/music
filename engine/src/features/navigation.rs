@@ -1,4 +1,3 @@
-use crate::utils::l;
 use crate::utils::hide_modal;
 use crate::utils::show_modal;
 use crate::features::state::get_state;
@@ -68,7 +67,7 @@ pub fn process_hash() {
             if song.original {
                 state.player.author.set_text_content(Some(&version.artist));
             } else {
-                state.player.author.set_text_content(Some(&format!("{} ({})", version.artist, l("%lang.coverBy|Kammy%"))));
+                state.player.author.set_text_content(Some(&format!("{} (Cover by Kammy)", version.artist)));
             }
 
             state.player.audio.set_attribute("data-kme-src", &format!("{}/{}", crate::CONTENT_CDN_ORIGIN, version.cdn_id)).unwrap();
