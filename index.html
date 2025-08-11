@@ -186,10 +186,12 @@
                 i.outerHTML = await (await fetch(i.getAttribute("src"))).text();
             }));
 
+            _initKME();
+
             window.wasm = wasm;
             wasm.default();
         })();
     </script>
-    <!--<script src="https://media.static.leafia.eu/i18n.js"></script>-->
+    <script src="https://media.static.leafia.eu/i18n.js"></script>
 </body>
 </html>
