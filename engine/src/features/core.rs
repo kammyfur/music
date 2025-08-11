@@ -8,7 +8,7 @@ use crate::models::modal::{PlayerModal, VersionModal};
 use crate::models::song::Song;
 use crate::models::state::State;
 use crate::process_hash;
-use crate::utils::{eval, complete_load};
+use crate::utils::{eval, complete_load, l};
 
 pub async fn load() {
     let window = web_sys::window().expect("No global `window` exists");
@@ -17,7 +17,7 @@ pub async fn load() {
     let directory: Directory = get_directory().await;
     document.get_element_by_id("count")
         .unwrap()
-        .set_text_content(Some(&format!("{} productions", directory.0.len())));
+        .set_text_content(Some(&l(&format!("%lang.productions|{}%", directory.0.len()))));
 
     let songs: Vec<Song> = (&directory).into();
 

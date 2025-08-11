@@ -1,3 +1,4 @@
+use crate::utils::l;
 use crate::features::state::get_state;
 use crate::utils::hash_text_color;
 use web_sys::HtmlElement;
@@ -29,7 +30,6 @@ impl Song {
 
         if show_year {
             let year_span = document.create_element("span").unwrap();
-            //year_span.class_list().add_1("fella-footnotes").unwrap();
             year_span.set_text_content(Some(&self.year.to_string()));
             year.append_with_node_1(&year_span).unwrap();
         }
@@ -41,7 +41,6 @@ impl Song {
 
         if !self.original {
             let artist = document.create_element("span").unwrap();
-            //artist.class_list().add_1("fella-footnotes").unwrap();
             artist.set_text_content(Some(&format!("{} – ", self.artist)));
             content.append_with_node_1(&artist).unwrap();
         }
@@ -64,13 +63,13 @@ impl Song {
         if self.original {
             let badge = document.create_element("span").unwrap();
             badge.class_list().add_1("badge").unwrap();
-            badge.set_text_content(Some("Original"));
+            badge.set_text_content(Some(&l("%lang.original%")));
             badge.set_attribute("style", "background-color: rgba(255,132,146,.5) !important;").unwrap();
             badges.append_with_node_1(&badge).unwrap();
         } else {
             let badge = document.create_element("span").unwrap();
             badge.class_list().add_1("badge").unwrap();
-            badge.set_text_content(Some("Cover"));
+            badge.set_text_content(Some(&l("%lang.cover%")));
             badge.set_attribute("style", "background-color: rgba(133,255,241,.5) !important;").unwrap();
             badges.append_with_node_1(&badge).unwrap();
         }
@@ -78,7 +77,7 @@ impl Song {
         if self.versions.len() > 1 {
             let versions = document.create_element("span").unwrap();
             versions.class_list().add_1("badge").unwrap();
-            versions.set_text_content(Some(&format!("{} versions", self.versions.len())));
+            versions.set_text_content(Some(&l(&format!("%lang.versions|{}%", self.versions.len()))));
             let hash = hash_text_color(&self.versions.len().to_string());
             versions.set_attribute("style",
                                    &format!("background-color: rgba({},{},{},.5) !important;", hash.0, hash.1, hash.2)
