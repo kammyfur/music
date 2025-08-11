@@ -1,0 +1,21 @@
+{
+  "automatic": "Utilisar el idioma del navegador",
+  "title": "Biblioteca de música de %1",
+  "disclaimer": "Aunque me esfuerzo al máximo para ofrecer portadas y obras musicales de la más alta calidad posible, es posible que encuentre portadas con audio dañado o faltante. Lamentablemente, no puedo hacer nada al respecto, ya que significa que los archivos originales se han perdido o dañado.",
+  "signup": "Regístra para recibir notificaciones cuando se publiquen nuevos lanzamientos.",
+  "filter": "Filtrar por nombre...",
+  "copyright": [
+    "Todas las canciones pertenecen a sus creadores originales, consulte",
+    "el sitio web principal",
+    "para reclamos de derechos de autor."
+  ],
+  "cdm": "Desarrollado por %1",
+  "close": "Cerrar",
+  "versionTitle": "Seleccione una versión",
+  "versionSelect": "Selecciona la versión de \"%1\" que quiere escuchar:",
+  "productions": "%1 producciones",
+  "coverBy": "Repetición por %1",
+  "original": "Original",
+  "cover": "Repetición",
+  "versions": "%1 versiones"
+}
